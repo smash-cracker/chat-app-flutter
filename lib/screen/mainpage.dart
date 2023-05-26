@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/auth/class/chat/chat_controller.dart';
 import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/name.dart';
+import 'package:chat/auth/stories/screens/story_bar.dart';
 import 'package:chat/model/chat_contact.dart';
 import 'package:chat/model/group.dart';
 import 'package:chat/screen/call_pickup_screen.dart';
@@ -60,6 +61,7 @@ class _MainPageState extends ConsumerState<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     if (auth.currentUser != null) {
       final phoneNumber = auth.currentUser!.phoneNumber;
       return FutureBuilder<DocumentSnapshot>(
@@ -131,6 +133,10 @@ class _MainPageState extends ConsumerState<MainPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(
+                        height: height * 0.1,
+                        child: StatusBar(),
+                      ),
                       StreamBuilder<List<Group>>(
                           stream:
                               ref.watch(chatControllerProvider).chatGroups(),
