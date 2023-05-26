@@ -84,7 +84,16 @@ class _MainPageState extends ConsumerState<MainPage>
           print(snapshot.data!.data());
           print("snapshot.data");
           if (snapshot.data!.data() == null) {
-            return Name(phone: FirebaseAuth.instance.currentUser!.phoneNumber!);
+            // Navigator.popUntil(context, (route) => route.isFirst);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => Name(
+                            phone:
+                                FirebaseAuth.instance.currentUser!.phoneNumber!,
+                          )));
+            });
           }
 
           if (snapshot.hasData) {
