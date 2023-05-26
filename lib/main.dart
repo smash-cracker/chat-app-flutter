@@ -4,6 +4,7 @@ import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/phone_login.dart';
 import 'package:chat/auth/usercheck.dart';
 import 'package:chat/screen/mainpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,13 +15,15 @@ import 'utils/loader.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
 
   // This widget is the root of your application.
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
@@ -40,7 +43,9 @@ class MyApp extends ConsumerWidget {
         title: 'Flutter Demo',
         home: ref.watch(userDataAuthProvider).when(
             data: (user) {
-              if (user == null) {
+              print("user");
+              print(auth.currentUser);
+              if (auth.currentUser == null) {
                 return MyPhone();
               }
               return MainPage();

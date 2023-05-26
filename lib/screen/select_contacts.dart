@@ -76,6 +76,7 @@ class _SelectContactState extends ConsumerState<SelectContact> {
       ),
       body: ref.read(getContactsProvider).when(
             data: (contactList) {
+              setState(() {});
               // Map<String, List<Contact>> groupedContacts = {};
               // contactList.forEach((contact) {
               //   String firstLetter =

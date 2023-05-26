@@ -135,7 +135,11 @@ class _NameState extends ConsumerState<Name> {
                         ),
                       );
                 },
-                child: Text("Submit"),
+                child: _isloading
+                    ? Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      )
+                    : Text("Submit"),
               ),
             ],
           ),

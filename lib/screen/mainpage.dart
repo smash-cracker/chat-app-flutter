@@ -3,6 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/auth/class/chat/chat_controller.dart';
 import 'package:chat/auth/class/controller.dart';
+import 'package:chat/auth/name.dart';
 import 'package:chat/model/chat_contact.dart';
 import 'package:chat/model/group.dart';
 import 'package:chat/screen/call_pickup_screen.dart';
@@ -68,6 +69,22 @@ class _MainPageState extends ConsumerState<MainPage>
             .get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(
+                child: LoadingAnimationWidget.flickr(
+                    leftDotColor: Color(0xFFEB455F),
+                    rightDotColor: Color(0xFF2B3467),
+                    size: 30),
+              ),
+            );
+          }
+          print(snapshot.data!.data());
+          print("snapshot.data");
+          if (snapshot.data!.data() == null) {
+            return Name(phone: FirebaseAuth.instance.currentUser!.phoneNumber!);
+          }
+
           if (snapshot.hasData) {
             final data = snapshot.data!.data() as Map<String, dynamic>;
             return CallPickupScreen(
