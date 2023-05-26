@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/stories/repository.dart';
+import 'package:chat/model/status_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,5 +32,10 @@ class StatusController {
         context: context,
       );
     });
+  }
+
+  Future<List<Status>> getStatus(BuildContext context) async {
+    List<Status> statuses = await statusRepository.getStatus(context);
+    return statuses;
   }
 }

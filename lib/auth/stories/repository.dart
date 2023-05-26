@@ -113,4 +113,69 @@ class StatusRepository {
       showSnackBar(context: context, content: e.toString());
     }
   }
+
+  Future<List<Status>> getStatus(BuildContext context) async {
+    List<Status> statusData = [];
+    try {
+      List<Contact> contacts = [];
+      Contact contact = Contact(
+        id: "2335",
+        displayName: 'Aashaa CET',
+        thumbnail: null,
+        photo: null,
+        isStarred: false,
+        name: Name(first: 'Aashaa', last: 'CET'),
+        phones: [
+          Phone(
+            '+918714257796',
+            normalizedNumber: '+918714257796',
+            label: PhoneLabel.mobile,
+          ),
+        ],
+        // Add other properties as needed
+        emails: [],
+        addresses: [],
+        organizations: [],
+        websites: [],
+        socialMedias: [],
+        events: [],
+        notes: [],
+        accounts: [],
+        groups: [],
+      );
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
+      contacts.add(contact);
+      for (int i = 0; i < contacts.length; i++) {
+        print(contacts[i].phones[0].number);
+        var statusesSnapshot = await firestore
+            .collection('status')
+            .where(
+              'phoneNumber',
+              isEqualTo: contacts[i].phones[0].number.replaceAll(
+                    ' ',
+                    '',
+                  ),
+            )
+            .where(
+              'createdAt',
+              isGreaterThan: DateTime.now()
+                  .subtract(const Duration(hours: 24))
+                  .millisecondsSinceEpoch,
+            )
+            .get();
+        for (var tempData in statusesSnapshot.docs) {
+          Status tempStatus = Status.fromMap(tempData.data());
+          print(tempStatus.whoCanSee);
+          if (tempStatus.whoCanSee.contains(auth.currentUser!.phoneNumber)) {
+            statusData.add(tempStatus);
+          }
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return statusData;
+  }
 }
