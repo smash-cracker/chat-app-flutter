@@ -11,7 +11,9 @@ import 'package:chat/model/user_model.dart';
 import 'package:chat/screen/bottom_send.dart';
 import 'package:chat/screen/call_pickup_screen.dart';
 import 'package:chat/utils/chat_list.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:concentric_transition/concentric_transition.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -21,6 +23,7 @@ import '../utils/colors.dart';
 
 class MobileChatScreen extends ConsumerWidget {
   File? cachedFile;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void makeCall(WidgetRef ref, BuildContext context) {
     ref.read(callControllerProvider).makeCall(
@@ -30,6 +33,22 @@ class MobileChatScreen extends ConsumerWidget {
           profilePic,
           false,
         );
+  }
+
+  // Delete the document with the provided ID
+  void deleteDocument(String documentId, BuildContext context) async {
+    await firestore
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .collection('chats')
+        .doc(documentId)
+        .delete()
+        .then((_) {
+      Navigator.of(context).pop();
+      print('Document deleted successfully');
+    }).catchError((error) {
+      print('Failed to delete document: $error');
+    });
   }
 
   final String name;
@@ -188,7 +207,6 @@ class MobileChatScreen extends ConsumerWidget {
                         ],
                       ),
                     );
-                    ;
                   }),
           centerTitle: true,
           toolbarHeight: 60,
@@ -202,12 +220,22 @@ class MobileChatScreen extends ConsumerWidget {
                 color: Colors.black,
               ),
             ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(
+            PopupMenuButton(
+              // color: Colors.black,
+              shadowColor: Colors.white,
+              icon: Icon(
                 Icons.more_vert,
                 color: Colors.black,
               ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: Text('Clear chat'),
+                  onTap: () {
+                    // signOut(context);
+                    deleteDocument(uid, context);
+                  },
+                ),
+              ],
             ),
           ],
         ),
