@@ -120,11 +120,11 @@ class StatusRepository {
       List<Contact> contacts = [];
       Contact contact = Contact(
         id: "2335",
-        displayName: 'Aashaa CET',
+        displayName: 'Denny jr',
         thumbnail: null,
         photo: null,
         isStarred: false,
-        name: Name(first: 'Aashaa', last: 'CET'),
+        name: Name(first: 'Denny', last: 'jr'),
         phones: [
           Phone(
             '+918714257796',
@@ -205,47 +205,17 @@ class StatusRepository {
       //   contacts = await FlutterContacts.getContacts(withProperties: true);
       // }
       contacts.add(contact);
-      contacts.add(contact);
       contact = Contact(
         id: "2335",
-        displayName: 'Avani',
+        displayName: 'Sarath',
         thumbnail: null,
         photo: null,
         isStarred: false,
-        name: Name(first: 'Avani', last: ''),
+        name: Name(first: 'Sarath', last: ''),
         phones: [
           Phone(
             '+917356562246',
             normalizedNumber: '+91917356562246',
-            label: PhoneLabel.mobile,
-          ),
-        ],
-        // Add other properties as needed
-        emails: [],
-        addresses: [],
-        organizations: [],
-        websites: [],
-        socialMedias: [],
-        events: [],
-        notes: [],
-        accounts: [],
-        groups: [],
-      );
-      // if (await FlutterContacts.requestPermission()) {
-      //   contacts = await FlutterContacts.getContacts(withProperties: true);
-      // }
-      contacts.add(contact);
-      contact = Contact(
-        id: "2335",
-        displayName: 'Denny',
-        thumbnail: null,
-        photo: null,
-        isStarred: false,
-        name: Name(first: 'Denny', last: ''),
-        phones: [
-          Phone(
-            '+917012719561',
-            normalizedNumber: '+917012719561',
             label: PhoneLabel.mobile,
           ),
         ],
