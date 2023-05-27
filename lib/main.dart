@@ -32,8 +32,8 @@ class MyApp extends ConsumerWidget {
             titleTextStyle: TextStyle(fontFamily: 'RaleWay'),
           ),
           textTheme: TextTheme(
-            bodyText1: GoogleFonts.hind(),
-            bodyText2: GoogleFonts.hind(),
+            bodyText1: GoogleFonts.ubuntu(),
+            bodyText2: GoogleFonts.ubuntu(),
           ),
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.pink.shade200,

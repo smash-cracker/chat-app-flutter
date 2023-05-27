@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
 
@@ -16,63 +16,96 @@ class StatusBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      body: FutureBuilder<List<Status>>(
-          future: ref.read(statusControllerProvider).getStatus(context),
-          builder: (context, snapshot) {
-            print("snapshot.data");
-            print(snapshot.data);
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('');
-            }
-            print("snapshot.data!.length");
-            print(snapshot.data!.length);
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == (snapshot.data!.length)) {
-                  return GestureDetector(
-                    onTap: () async {
-                      if (index == (snapshot.data!.length + 1)) {
-                        File? pickedImage = await pickImageFromGallery(context);
-                        if (pickedImage != null) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => ConfirmStory(
-                                    file: pickedImage,
-                                  )));
-                        }
+    return FutureBuilder<List<Status>>(
+        future: ref.read(statusControllerProvider).getStatus(context),
+        builder: (context, snapshot) {
+          print("snapshot.data");
+          print(snapshot.data);
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text('');
+          }
+          print("snapshot.data!.length");
+          print(snapshot.data!.length);
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: snapshot.data!.length + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == (snapshot.data!.length)) {
+                return GestureDetector(
+                  onTap: () async {
+                    if (index == (snapshot.data!.length + 1)) {
+                      File? pickedImage = await pickImageFromGallery(context);
+                      if (pickedImage != null) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ConfirmStory(
+                                  file: pickedImage,
+                                )));
                       }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage('assets/G0.jpeg'),
-                        radius: 30,
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage('assets/G0.jpeg'),
+                              radius: 30,
+                            ),
+                            Text('Add story'),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                } else {
-                  final statusData = snapshot.data![index];
-                  return GestureDetector(
-                    onTap: () async {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => StatusScreen(
-                                status: statusData,
-                              )));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(statusData.profilePic),
-                        radius: 30,
+                  ),
+                );
+              } else {
+                final statusData = snapshot.data![index];
+                return GestureDetector(
+                  onTap: () async {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => StatusScreen(
+                              status: statusData,
+                            )));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(statusData.profilePic),
+                              radius: 30,
+                            ),
+                            Text(statusData.username),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                }
-              },
-            );
-          }),
-    );
+                  ),
+                );
+              }
+            },
+          );
+        });
   }
 }

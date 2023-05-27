@@ -40,9 +40,6 @@ class _SelectContactState extends ConsumerState<SelectContact> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      searchName = '';
-    });
   }
 
   @override
@@ -77,34 +74,6 @@ class _SelectContactState extends ConsumerState<SelectContact> {
       body: ref.read(getContactsProvider).when(
             data: (contactList) {
               setState(() {});
-              // Map<String, List<Contact>> groupedContacts = {};
-              // contactList.forEach((contact) {
-              //   String firstLetter =
-              //       contact.displayName.substring(0, 1).toUpperCase();
-              //   if (!groupedContacts.containsKey(firstLetter)) {
-              //     groupedContacts[firstLetter] = [contact];
-              //   } else {
-              //     groupedContacts[firstLetter]!.add(contact);
-              //   }
-              // });
-              // List<Widget> groupedContactWidgets = [];
-
-              // groupedContacts.forEach((letter, contacts) {
-              //   groupedContactWidgets.addAll([
-              //     SizedBox(height: 20),
-              //     SizedBox(
-              //       height: height * 0.05,
-              //       child: Padding(
-              //         padding: const EdgeInsets.only(left: 10.0),
-              //         child: Text(letter),
-              //       ),
-              //     ),
-              //   ]);
-              //   groupedContactWidgets.addAll(
-              //     contacts
-              //         .map((contact) => ContactBox(name: contact.displayName)),
-              //   );
-              // });
               return SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: width * 0.05),
@@ -162,7 +131,7 @@ class _SelectContactState extends ConsumerState<SelectContact> {
                                       '+91$selectedContactStringNumber';
                                 }
 
-                                if (searchName == '' ||
+                                if (searchName.isEmpty ||
                                     contact.displayName
                                         .toLowerCase()
                                         .contains(searchName)) {
