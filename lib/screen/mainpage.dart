@@ -342,6 +342,7 @@ class _MainPageState extends ConsumerState<MainPage>
                               .collection('users')
                               .doc(auth.currentUser!.phoneNumber)
                               .collection('chats')
+                              .orderBy('timeSent', descending: true)
                               .snapshots(),
                           builder: (context, snapshots) {
                             if (snapshots.connectionState ==
