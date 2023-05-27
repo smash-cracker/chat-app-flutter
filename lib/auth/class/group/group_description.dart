@@ -3,8 +3,6 @@
 import 'dart:io';
 
 import 'package:chat/auth/class/group/add_group_members.dart';
-import 'package:chat/auth/class/group/group_controller.dart';
-import 'package:chat/utils/contact_box.dart';
 import 'package:chat/utils/members_box.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

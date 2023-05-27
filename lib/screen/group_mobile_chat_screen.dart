@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/colors.dart';
 
-class MobileChatScreen extends ConsumerWidget {
+class GroupMobileChatScreen extends ConsumerWidget {
   File? cachedFile;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -52,12 +52,42 @@ class MobileChatScreen extends ConsumerWidget {
     });
   }
 
+  Future<void> updateMessagesFrom(
+      String docId, String phoneNumber, DateTime newMessagesFrom) async {
+    CollectionReference collection =
+        FirebaseFirestore.instance.collection('groups');
+
+    // Fetch the document
+    DocumentSnapshot snapshot = await collection.doc(uid).get();
+    if (!snapshot.exists) {
+      print('Document does not exist');
+      return;
+    }
+
+    // Get the current list of maps
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    List<dynamic> list = data['membersUid'];
+
+    // Find the map with the matching phone number
+    for (int i = 0; i < list.length; i++) {
+      if (list[i]['phone'] == phoneNumber) {
+        // Update the messagesFrom field
+        list[i]['messagesFrom'] = newMessagesFrom;
+        break;
+      }
+    }
+
+    // Update the document with the modified list
+    await collection.doc(docId).update({'membersUid': list});
+  }
+
   final String name;
   final String uid;
   final String profilePic;
   final bool isGroupChat;
   final List<Map<String, dynamic>> members;
-  MobileChatScreen({
+  GroupMobileChatScreen({
     Key? key,
     required this.name,
     required this.uid,
@@ -69,6 +99,17 @@ class MobileChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final width = MediaQuery.of(context).size.width;
+    print(members);
+
+    final currentUserMap = members.firstWhere(
+      (member) =>
+          member['phone'] == FirebaseAuth.instance.currentUser!.phoneNumber,
+      orElse: () => {},
+    );
+    print("currentUserMap");
+    print(currentUserMap);
+
+    print("currentUserMap");
 
     return CallPickupScreen(
       scaffold: Scaffold(
@@ -233,7 +274,11 @@ class MobileChatScreen extends ConsumerWidget {
                   child: Text('Clear chat'),
                   onTap: () {
                     // signOut(context);
-                    deleteDocument(uid, context);
+                    updateMessagesFrom(
+                        uid,
+                        FirebaseAuth.instance.currentUser!.phoneNumber!,
+                        DateTime.now());
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -250,11 +295,11 @@ class MobileChatScreen extends ConsumerWidget {
           child: Column(
             children: [
               Expanded(
-                child: ChatList(
-                  recieverUserId: uid,
-                  isGroupChat: isGroupChat,
-                ),
-              ),
+                  child: ChatListForGroup(
+                recieverUserId: uid,
+                isGroupChat: isGroupChat,
+                messageFrom: currentUserMap['messagesFrom'],
+              )),
               BottomSendField(
                 recieverUserId: uid,
                 isGroupChat: isGroupChat,

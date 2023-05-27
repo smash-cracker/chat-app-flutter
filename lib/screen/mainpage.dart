@@ -11,6 +11,7 @@ import 'package:chat/main.dart';
 import 'package:chat/model/chat_contact.dart';
 import 'package:chat/model/group.dart';
 import 'package:chat/screen/call_pickup_screen.dart';
+import 'package:chat/screen/group_mobile_chat_screen.dart';
 import 'package:chat/screen/mobile_chat_screen.dart';
 import 'package:chat/screen/select_contacts.dart';
 import 'package:chat/utils/chat_box.dart';
@@ -225,10 +226,10 @@ class _MainPageState extends ConsumerState<MainPage>
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          print('pressed');
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
-                                              builder: (_) => MobileChatScreen(
+                                              builder: (_) =>
+                                                  GroupMobileChatScreen(
                                                 name: groupData.name,
                                                 members: groupData.membersUid,
                                                 uid: groupData.groupId,

@@ -14,17 +14,23 @@ import 'package:intl/intl.dart';
 
 import 'sender_message_card.dart';
 
-class ChatList extends ConsumerStatefulWidget {
+class ChatListForGroup extends ConsumerStatefulWidget {
   final String recieverUserId;
   final bool isGroupChat;
-  ChatList(
-      {required this.recieverUserId, required this.isGroupChat, super.key});
+  final Timestamp messageFrom;
+  ChatListForGroup({
+    required this.recieverUserId,
+    required this.isGroupChat,
+    required this.messageFrom,
+    super.key,
+  });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ChatListState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ChatListForGroupState();
 }
 
-class _ChatListState extends ConsumerState<ChatList> {
+class _ChatListForGroupState extends ConsumerState<ChatListForGroup> {
   final ScrollController messageController = ScrollController();
 
   @override
@@ -81,36 +87,39 @@ class _ChatListState extends ConsumerState<ChatList> {
                       messageData.messageID,
                     );
               }
-              if (messageData.senderID ==
-                  FirebaseAuth.instance.currentUser!.phoneNumber) {
-                return MyMessageCard(
+
+              if (messageData.timeSent.isAfter(widget.messageFrom.toDate())) {
+                if (messageData.senderID ==
+                    FirebaseAuth.instance.currentUser!.phoneNumber) {
+                  return MyMessageCard(
+                    message: messageData.text,
+                    date: DateFormat('Hm').format(messageData.timeSent),
+                    type: messageData.type,
+                    repliedText: messageData.repliedMessage,
+                    username: messageData.repliedTo,
+                    repliedMessageType: messageData.repliedMessageType,
+                    onLeftSwipe: () => onMessageSwipe(
+                      messageData.text,
+                      true,
+                      messageData.type,
+                    ),
+                    isSeen: messageData.isSeen,
+                  );
+                }
+                return SenderMessageCard(
                   message: messageData.text,
                   date: DateFormat('Hm').format(messageData.timeSent),
                   type: messageData.type,
-                  repliedText: messageData.repliedMessage,
                   username: messageData.repliedTo,
                   repliedMessageType: messageData.repliedMessageType,
-                  onLeftSwipe: () => onMessageSwipe(
+                  onRightSwipe: () => onMessageSwipe(
                     messageData.text,
-                    true,
+                    false,
                     messageData.type,
                   ),
-                  isSeen: messageData.isSeen,
+                  repliedText: messageData.repliedMessage,
                 );
               }
-              return SenderMessageCard(
-                message: messageData.text,
-                date: DateFormat('Hm').format(messageData.timeSent),
-                type: messageData.type,
-                username: messageData.repliedTo,
-                repliedMessageType: messageData.repliedMessageType,
-                onRightSwipe: () => onMessageSwipe(
-                  messageData.text,
-                  false,
-                  messageData.type,
-                ),
-                repliedText: messageData.repliedMessage,
-              );
             },
           );
         });
