@@ -7,12 +7,14 @@ class MembersBox extends StatefulWidget {
   final String number;
   final bool group;
   final int randomNumber;
+  final bool admin;
   const MembersBox({
     super.key,
     required this.name,
     required this.number,
     this.group = false,
     required this.randomNumber,
+    this.admin = false,
   });
 
   @override
@@ -55,11 +57,29 @@ class _Membersate extends State<MembersBox> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          widget.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        widget.admin
+                            ? Chip(
+                                backgroundColor: Colors.green[300],
+                                label: Text(
+                                  'Admin',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
                     ),
                     Text(widget.number),
                   ],

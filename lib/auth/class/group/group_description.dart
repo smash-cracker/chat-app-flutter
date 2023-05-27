@@ -257,6 +257,7 @@ class _GroupDescription extends ConsumerState<GroupDescription> {
                                 },
                                 icon: Icon(
                                   CupertinoIcons.person_crop_circle_badge_plus,
+                                  color: Colors.pink[300],
                                 ))
                           ],
                         ),
@@ -292,6 +293,7 @@ class _GroupDescription extends ConsumerState<GroupDescription> {
                                           'name': widget.contactList[index]
                                               ['name'],
                                           'phone': phoneNumber,
+                                          'admin': false,
                                         },
                                       ]),
                                     }).then((_) {
@@ -310,6 +312,7 @@ class _GroupDescription extends ConsumerState<GroupDescription> {
                                     number: widget.contactList[index]['phone'],
                                     group: true,
                                     randomNumber: randomNumber,
+                                    admin: widget.contactList[index]['admin'],
                                   ),
                                 );
                               }

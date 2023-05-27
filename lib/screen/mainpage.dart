@@ -215,6 +215,10 @@ class _MainPageState extends ConsumerState<MainPage>
                                 itemBuilder: (context, index) {
                                   var groupData = snapshot.data![index];
 
+                                  print("groupData");
+                                  print(groupData.membersUid);
+                                  print("groupData");
+
                                   return Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,

@@ -30,9 +30,11 @@ class GroupRepository {
 
   void createGroup(BuildContext context, String name, File profilePic,
       List<Contact> selectedContact) async {
-    Contact? currentUserContact =
-        await FlutterContacts.getContact(auth.currentUser!.phoneNumber!);
-    String currentUserDisplayName = currentUserContact?.displayName ?? '';
+    final userdata = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.phoneNumber)
+        .get();
+    final data = userdata.data() as Map<String, dynamic>;
 
     try {
       List<Map<String, dynamic>> uids = [];
@@ -53,6 +55,8 @@ class GroupRepository {
             {
               'phone': userCollection.docs[0].data()['phone'],
               'name': selectedContact[i].displayName,
+              'messagesFrom': DateTime.now(),
+              'admin': false,
             },
           );
         }
@@ -60,7 +64,9 @@ class GroupRepository {
       uids.add(
         {
           'phone': auth.currentUser!.phoneNumber!,
-          'name': currentUserDisplayName,
+          'name': data['name'],
+          'messagesFrom': DateTime.now(),
+          'admin': true,
         },
       );
       var groupId = const Uuid().v1();
@@ -113,6 +119,8 @@ class GroupRepository {
             {
               'phone': userCollection.docs[0].data()['phone'],
               'name': selectedContact[i].displayName,
+              'messagesFrom': DateTime.now(),
+              'admin': false,
             },
           );
         }
