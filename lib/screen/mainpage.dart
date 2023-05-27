@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/auth/class/chat/chat_controller.dart';
 import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/name.dart';
 import 'package:chat/auth/stories/screens/story_bar.dart';
+import 'package:chat/main.dart';
 import 'package:chat/model/chat_contact.dart';
 import 'package:chat/model/group.dart';
 import 'package:chat/screen/call_pickup_screen.dart';
@@ -16,6 +19,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -30,11 +34,22 @@ class MainPage extends ConsumerStatefulWidget {
 class _MainPageState extends ConsumerState<MainPage>
     with WidgetsBindingObserver {
   final FirebaseAuth auth = FirebaseAuth.instance;
-
+  File? cachedFile;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      Navigator.popUntil(context, (route) => route.isFirst);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => MyApp()));
+    } catch (error) {
+      print('Sign-out failed: $error');
+    }
   }
 
   @override
@@ -119,7 +134,10 @@ class _MainPageState extends ConsumerState<MainPage>
                   title: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage(data['dp']),
+                        backgroundImage: CachedNetworkImageProvider(
+                          data['dp'],
+                          cacheManager: DefaultCacheManager(),
+                        ),
                       ),
                       SizedBox(
                         width: 10,
@@ -155,7 +173,9 @@ class _MainPageState extends ConsumerState<MainPage>
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           child: Text('Log Out'),
-                          onTap: () {},
+                          onTap: () {
+                            signOut(context);
+                          },
                         ),
                       ],
                     ),
@@ -165,9 +185,12 @@ class _MainPageState extends ConsumerState<MainPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: height * 0.15,
-                        child: StatusBar(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SizedBox(
+                          height: height * 0.15,
+                          child: StatusBar(),
+                        ),
                       ),
                       Container(
                         decoration: BoxDecoration(

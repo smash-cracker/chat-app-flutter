@@ -1,7 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/class/group/group_description.dart';
+import 'package:chat/auth/class/group/user_account_description.dart';
 import 'package:chat/auth/video/call_controller.dart';
 import 'package:chat/model/user_model.dart';
 import 'package:chat/screen/bottom_send.dart';
@@ -10,11 +14,14 @@ import 'package:chat/utils/chat_list.dart';
 import 'package:concentric_transition/concentric_transition.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/colors.dart';
 
 class MobileChatScreen extends ConsumerWidget {
+  File? cachedFile;
+
   void makeCall(WidgetRef ref, BuildContext context) {
     ref.read(callControllerProvider).makeCall(
           context,
@@ -30,7 +37,7 @@ class MobileChatScreen extends ConsumerWidget {
   final String profilePic;
   final bool isGroupChat;
   final List<Map<String, dynamic>> members;
-  const MobileChatScreen({
+  MobileChatScreen({
     Key? key,
     required this.name,
     required this.uid,
@@ -81,7 +88,10 @@ class MobileChatScreen extends ConsumerWidget {
                       Container(
                         padding: EdgeInsets.zero,
                         child: CircleAvatar(
-                          backgroundImage: NetworkImage(profilePic),
+                          backgroundImage: CachedNetworkImageProvider(
+                            profilePic,
+                            cacheManager: DefaultCacheManager(),
+                          ),
                           radius: 20,
                         ),
                       ),
@@ -138,31 +148,45 @@ class MobileChatScreen extends ConsumerWidget {
                         ],
                       );
                     }
-                    return Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(profilePic),
-                          radius: 20,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              name.toString(),
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          ConcentricPageRoute(
+                            builder: (_) => UserAccountDescription(
+                              contactList: [],
+                              groupName: name,
+                              image: profilePic,
+                              groupId: uid,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(profilePic),
+                            radius: 20,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                name.toString(),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                            Text(
-                              snapshot.data!.isOnline ? 'online' : 'offline',
-                              style: TextStyle(color: Colors.green[300]),
-                            ),
-                          ],
-                        ),
-                      ],
+                              Text(
+                                snapshot.data!.isOnline ? 'online' : 'offline',
+                                style: TextStyle(color: Colors.green[300]),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                     ;
                   }),
