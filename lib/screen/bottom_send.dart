@@ -51,6 +51,7 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
       throw RecordingPermissionException('Mic permission not allowed!');
     }
     await _soundRecorder!.openRecorder();
+    _soundRecorder!.setSubscriptionDuration(const Duration(milliseconds: 500));
     isRecorderInit = true;
   }
 
@@ -85,6 +86,10 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
         isRecording = !isRecording;
       });
     }
+  }
+
+  Future stopRecord() async {
+    await _soundRecorder!.stopRecorder();
   }
 
   void sendFileMessage(File file, MessageEnum messageEnum) {
@@ -176,8 +181,15 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
                             padding: const EdgeInsets.all(8.0),
                             child: GestureDetector(
                               onTap: () {
-                                FocusScope.of(context).unfocus();
-                                sendTextMessage();
+                                if (!isRecording) {
+                                  sendTextMessage();
+                                } else {
+                                  FocusScope.of(context).unfocus();
+                                  stopRecord();
+                                  setState(() {
+                                    isRecording = false;
+                                  });
+                                }
                               },
                               child: Icon(
                                 sendButton
@@ -191,63 +203,114 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.pink[100],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: selectGif,
-                              child: Icon(
-                                Icons.gif,
-                                color: Colors.white,
+                      isRecording
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.pink[100],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: sendTextMessage,
+                                    child: Icon(
+                                      Icons.send,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.pink[100],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: selectImage,
-                              child: Icon(
-                                Icons.camera,
-                                color: Colors.white,
+                            )
+                          : Container(),
+                      !isRecording
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.pink[100],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: selectGif,
+                                    child: Icon(
+                                      Icons.gif,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.pink[100],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: selectVideo,
-                              child: Icon(
-                                Icons.video_call,
-                                color: Colors.white,
+                            )
+                          : Container(),
+                      !isRecording
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.pink[100],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: selectImage,
+                                    child: Icon(
+                                      Icons.camera,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
+                            )
+                          : Container(),
+                      !isRecording
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.pink[100],
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: selectVideo,
+                                    child: Icon(
+                                      Icons.video_call,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(),
+                      isRecording
+                          ? StreamBuilder<RecordingDisposition>(
+                              stream: _soundRecorder!.onProgress,
+                              builder: (context, snapshot) {
+                                final duration = snapshot.hasData
+                                    ? snapshot.data!.duration
+                                    : Duration.zero;
+
+                                String formattime(int n) =>
+                                    n.toString().padLeft(2);
+                                final min =
+                                    formattime(duration.inMinutes.remainder(60))
+                                        .padLeft(2);
+                                final sec =
+                                    formattime(duration.inSeconds.remainder(60))
+                                        .padLeft(2);
+                                return Text('${min}:${sec}');
+                              },
+                            )
+                          : Container(),
                     ],
                   ),
                 ),

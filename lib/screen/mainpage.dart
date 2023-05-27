@@ -109,8 +109,7 @@ class _MainPageState extends ConsumerState<MainPage>
               ),
             );
           }
-          print(snapshot.data!.data());
-          print("snapshot.data");
+
           if (snapshot.data!.data() == null) {
             // Navigator.popUntil(context, (route) => route.isFirst);
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -215,10 +214,6 @@ class _MainPageState extends ConsumerState<MainPage>
                                 itemCount: snapshot.data!.length,
                                 itemBuilder: (context, index) {
                                   var groupData = snapshot.data![index];
-
-                                  print("groupData");
-                                  print(groupData.membersUid);
-                                  print("groupData");
 
                                   return Column(
                                     crossAxisAlignment:
@@ -391,7 +386,6 @@ class _MainPageState extends ConsumerState<MainPage>
                                       itemCount: snapshots.data!.docs.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        print(snapshots.data!.docs.length);
                                         return SizedBox(
                                           child:
                                               FutureBuilder<DocumentSnapshot>(

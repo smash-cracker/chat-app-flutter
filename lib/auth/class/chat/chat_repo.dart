@@ -114,6 +114,8 @@ class ChatRepository {
       for (var document in event.docs) {
         messages.add(Message.fromMap(document.data()));
       }
+      print("messages");
+      print(messages);
       return messages;
     });
   }

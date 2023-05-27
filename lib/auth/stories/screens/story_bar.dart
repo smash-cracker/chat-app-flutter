@@ -19,13 +19,10 @@ class StatusBar extends ConsumerWidget {
     return FutureBuilder<List<Status>>(
         future: ref.read(statusControllerProvider).getStatus(context),
         builder: (context, snapshot) {
-          print("snapshot.data");
-          print(snapshot.data);
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Text('');
           }
-          print("snapshot.data!.length");
-          print(snapshot.data!.length);
+
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: snapshot.data!.length + 1,

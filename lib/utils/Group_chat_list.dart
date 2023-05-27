@@ -73,6 +73,8 @@ class _ChatListForGroupState extends ConsumerState<ChatListForGroup> {
                 .jumpTo(messageController.position.maxScrollExtent);
           });
 
+          print(snapshot.data![0]);
+
           return ListView.builder(
             controller: messageController,
             itemCount: snapshot.data!.length,
@@ -87,7 +89,10 @@ class _ChatListForGroupState extends ConsumerState<ChatListForGroup> {
                       messageData.messageID,
                     );
               }
-
+              print(messageData.text);
+              print(messageData.timeSent);
+              print(widget.messageFrom.toDate());
+              print(messageData.timeSent.isAfter(widget.messageFrom.toDate()));
               if (messageData.timeSent.isAfter(widget.messageFrom.toDate())) {
                 if (messageData.senderID ==
                     FirebaseAuth.instance.currentUser!.phoneNumber) {
@@ -119,6 +124,8 @@ class _ChatListForGroupState extends ConsumerState<ChatListForGroup> {
                   ),
                   repliedText: messageData.repliedMessage,
                 );
+              } else {
+                return Container();
               }
             },
           );

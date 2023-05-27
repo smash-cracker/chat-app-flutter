@@ -106,10 +106,6 @@ class GroupMobileChatScreen extends ConsumerWidget {
           member['phone'] == FirebaseAuth.instance.currentUser!.phoneNumber,
       orElse: () => {},
     );
-    print("currentUserMap");
-    print(currentUserMap);
-
-    print("currentUserMap");
 
     return CallPickupScreen(
       scaffold: Scaffold(
