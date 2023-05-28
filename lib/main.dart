@@ -32,15 +32,15 @@ class MyApp extends ConsumerWidget {
             titleTextStyle: TextStyle(fontFamily: 'RaleWay'),
           ),
           textTheme: TextTheme(
-            bodyText1: GoogleFonts.ubuntu(),
-            bodyText2: GoogleFonts.ubuntu(),
+            bodyText1: GoogleFonts.openSans(),
+            bodyText2: GoogleFonts.openSans(),
           ),
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.pink.shade200,
           ),
         ),
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Flutter Chat',
         home: ref.watch(userDataAuthProvider).when(
             data: (user) {
               print("user");

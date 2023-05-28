@@ -23,8 +23,12 @@ class _ChatBoxState extends State<ChatBox> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
-        padding: EdgeInsets.only(
-          top: 4,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 253, 244, 248),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: EdgeInsets.all(
+          4,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,6 +47,7 @@ class _ChatBoxState extends State<ChatBox> {
                 Text(
                   widget.chatContactData['name'],
                   style: TextStyle(
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

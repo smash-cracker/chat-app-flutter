@@ -59,7 +59,15 @@ class StatusBar extends ConsumerWidget {
                               backgroundImage: AssetImage('assets/G0.jpeg'),
                               radius: 30,
                             ),
-                            Text('Add story'),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              'Add story',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -89,12 +97,33 @@ class StatusBar extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(statusData.profilePic),
-                              radius: 30,
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 1,
+                                    color: Color.fromARGB(226, 250, 211, 211),
+                                    spreadRadius: 3,
+                                  )
+                                ],
+                              ),
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(statusData.profilePic),
+                                radius: 30,
+                              ),
                             ),
-                            Text(statusData.username),
+                            SizedBox(
+                              height: 6,
+                            ),
+                            Text(
+                              statusData.username,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
                           ],
                         ),
                       ),
