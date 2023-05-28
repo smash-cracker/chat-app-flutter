@@ -2,16 +2,19 @@
 
 import 'dart:io';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:chat/auth/class/group/group_controller.dart';
 import 'package:chat/utils/contact_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class GroupMembers extends ConsumerStatefulWidget {
   var contactList;
   final String groupName;
+
   final File image;
   GroupMembers(
       {super.key,
@@ -28,6 +31,7 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
   List<Contact> selectedContacts = [];
   int counter = 1;
   int resMod = 1;
+  bool isloading = false;
 
   int generateRandomNumber() {
     resMod = counter % 6;
@@ -38,13 +42,23 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
     return resMod;
   }
 
-  void CreateGroup() {
+  Future<String> CreateGroup() async {
+    String res = "error";
+    setState(() {
+      isloading = true;
+    });
     ref.read(groupControllerProvider).createGroup(
           context,
           widget.groupName,
           widget.image,
           selectedContacts,
         );
+
+    setState(() {
+      isloading = false;
+    });
+    res = "success";
+    return res;
   }
 
   @override
@@ -269,19 +283,64 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                 // )
               ]),
           child: GestureDetector(
-            onTap: CreateGroup,
+            onTap: () async {
+              String x = await CreateGroup();
+              if (x == "success") {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                final snackBar = SnackBar(
+                  /// need to set following properties for best effect of awesome_snackbar_content
+                  elevation: 0,
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  content: AwesomeSnackbarContent(
+                    title: 'Yay',
+                    message: 'Game published. Go to personal games.',
+
+                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                    contentType: ContentType.success,
+                  ),
+                );
+
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
+              } else {
+                final snackBar = SnackBar(
+                  /// need to set following properties for best effect of awesome_snackbar_content
+                  elevation: 0,
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  content: AwesomeSnackbarContent(
+                    title: 'uh oh',
+                    message: 'fill details correctly.',
+
+                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                    contentType: ContentType.failure,
+                  ),
+                );
+
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(snackBar);
+              }
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(
-                    'Create group',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: isloading
+                      ? LoadingAnimationWidget.flickr(
+                          leftDotColor: Color(0xFFEB455F),
+                          rightDotColor: Color(0xFF2B3467),
+                          size: 30)
+                      : Text(
+                          'Create group',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ],
             ),

@@ -198,10 +198,10 @@ class _MainPageState extends ConsumerState<MainPage>
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFfefefe),
+                          color: Color.fromARGB(255, 245, 221, 221),
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
                           ),
                         ),
                         child: StreamBuilder<List<Group>>(
@@ -223,82 +223,105 @@ class _MainPageState extends ConsumerState<MainPage>
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (_) =>
-                                                  GroupMobileChatScreen(
-                                                name: groupData.name,
-                                                members: groupData.membersUid,
-                                                uid: groupData.groupId,
-                                                profilePic: groupData.groupPic,
-                                                isGroupChat: true,
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 12.0,
+                                          left: 10,
+                                          right: 10,
+                                        ),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    GroupMobileChatScreen(
+                                                  name: groupData.name,
+                                                  members: groupData.membersUid,
+                                                  uid: groupData.groupId,
+                                                  profilePic:
+                                                      groupData.groupPic,
+                                                  isGroupChat: true,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                            );
+                                          },
                                           child: Container(
-                                            padding: EdgeInsets.only(
-                                              top: 4,
+                                            decoration: BoxDecoration(
+                                              color: Color.fromARGB(
+                                                  255, 253, 244, 248),
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                    groupData.groupPic,
-                                                  ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                  top: 4,
                                                 ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.04,
-                                                ),
-                                                Column(
+                                                child: Row(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                      MainAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                      groupData.name,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                    CircleAvatar(
+                                                      radius: 30,
+                                                      backgroundImage:
+                                                          CachedNetworkImageProvider(
+                                                        groupData.groupPic,
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.6,
-                                                        child: Text(
-                                                          groupData.lastMessage,
-                                                        )),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.04,
+                                                    ),
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          groupData.name,
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.6,
+                                                            child: Text(
+                                                              groupData
+                                                                  .lastMessage,
+                                                            )),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(DateFormat.Hm()
+                                                            .format(groupData
+                                                                .timeSent)),
+                                                        Text(''),
+                                                        // Icon(
+                                                        //   Icons.done_all,
+                                                        //   color: Colors.green[300],
+                                                        // ),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(DateFormat.Hm().format(
-                                                        groupData.timeSent)),
-                                                    Text(''),
-                                                    // Icon(
-                                                    //   Icons.done_all,
-                                                    //   color: Colors.green[300],
-                                                    // ),
-                                                  ],
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -364,11 +387,7 @@ class _MainPageState extends ConsumerState<MainPage>
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Color(0xFFfefefe),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
+                          color: Color.fromARGB(255, 245, 221, 221),
                         ),
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance

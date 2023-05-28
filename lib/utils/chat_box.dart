@@ -21,14 +21,18 @@ class _ChatBoxState extends State<ChatBox> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(
+        top: 12.0,
+        left: 10,
+        right: 10,
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: Color.fromARGB(255, 253, 244, 248),
           borderRadius: BorderRadius.circular(20),
         ),
         padding: EdgeInsets.all(
-          4,
+          8,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
