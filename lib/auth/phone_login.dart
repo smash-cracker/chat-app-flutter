@@ -212,7 +212,7 @@ class _MyPhoneState extends State<MyPhone> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/otp.png',
+                'assets/robo.gif',
                 width: 150,
                 height: 150,
               ),

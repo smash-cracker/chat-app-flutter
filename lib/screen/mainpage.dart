@@ -160,6 +160,10 @@ class _MainPageState extends ConsumerState<MainPage>
                           ),
                         ],
                       ),
+                      SizedBox(
+                        width: 50,
+                        child: Image(image: AssetImage('assets/hello.gif')),
+                      )
                     ],
                   ),
                   actions: [
