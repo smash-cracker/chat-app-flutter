@@ -35,6 +35,7 @@ class MainPage extends ConsumerStatefulWidget {
 class _MainPageState extends ConsumerState<MainPage>
     with WidgetsBindingObserver {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final scrollController = ScrollController();
   File? cachedFile;
   @override
   void initState() {
@@ -100,13 +101,11 @@ class _MainPageState extends ConsumerState<MainPage>
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(
-                child: LoadingAnimationWidget.flickr(
-                    leftDotColor: Color(0xFFEB455F),
-                    rightDotColor: Color(0xFF2B3467),
-                    size: 30),
-              ),
+            return Center(
+              child: LoadingAnimationWidget.flickr(
+                  leftDotColor: Color(0xFFEB455F),
+                  rightDotColor: Color(0xFF2B3467),
+                  size: 30),
             );
           }
 
@@ -125,389 +124,373 @@ class _MainPageState extends ConsumerState<MainPage>
 
           if (snapshot.hasData) {
             final data = snapshot.data!.data() as Map<String, dynamic>;
-            return CallPickupScreen(
-              scaffold: Scaffold(
+            return Scaffold(
+              backgroundColor: Color(0xFFf7f1f7),
+              appBar: AppBar(
+                elevation: 0,
                 backgroundColor: Color(0xFFf7f1f7),
-                appBar: AppBar(
-                  elevation: 0,
-                  backgroundColor: Color(0xFFf7f1f7),
-                  title: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                          data['dp'],
-                          cacheManager: DefaultCacheManager(),
+                title: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: CachedNetworkImageProvider(
+                        data['dp'],
+                        cacheManager: DefaultCacheManager(),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          greeting,
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            greeting,
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                        Text(
+                          '${data["name"]}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            '${data["name"]}',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: Image(image: AssetImage('assets/hello.gif')),
-                      )
-                    ],
-                  ),
-                  actions: [
-                    PopupMenuButton(
-                      // color: Colors.black,
-                      shadowColor: Colors.white,
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.black,
-                      ),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          child: Text('Log Out'),
-                          onTap: () {
-                            signOut(context);
-                          },
                         ),
                       ],
                     ),
+                    SizedBox(
+                      width: 50,
+                      child: Image(image: AssetImage('assets/hello.gif')),
+                    )
                   ],
                 ),
-                body: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: SizedBox(
-                          height: height * 0.15,
-                          child: StatusBar(),
+                actions: [
+                  PopupMenuButton(
+                    // color: Colors.black,
+                    shadowColor: Colors.white,
+                    icon: Icon(
+                      Icons.more_vert,
+                      color: Colors.black,
+                    ),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: Text('Log Out'),
+                        onTap: () {
+                          signOut(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              body: CustomScrollView(controller: scrollController, slivers: [
+                SliverAppBar(
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF8E8EE),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 245, 221, 221),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                        ),
-                        child: StreamBuilder<List<Group>>(
-                            stream:
-                                ref.watch(chatControllerProvider).chatGroups(),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Container();
-                              }
+                      width: double.maxFinite,
+                      child: Text(''),
+                    ),
+                  ),
+                  expandedHeight: height * 0.2,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 8, bottom: 18),
+                      child: SizedBox(
+                        child: StatusBar(),
+                      ),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF8E8EE),
+                    ),
+                    child: StreamBuilder<List<Group>>(
+                        stream: ref.watch(chatControllerProvider).chatGroups(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Container();
+                          }
 
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  var groupData = snapshot.data![index];
+                          return ListView.builder(
+                            controller: scrollController,
+                            shrinkWrap: true,
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              var groupData = snapshot.data![index];
 
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 12.0,
-                                          left: 10,
-                                          right: 10,
-                                        ),
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    GroupMobileChatScreen(
-                                                  name: groupData.name,
-                                                  members: groupData.membersUid,
-                                                  uid: groupData.groupId,
-                                                  profilePic:
-                                                      groupData.groupPic,
-                                                  isGroupChat: true,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Color.fromARGB(
-                                                  255, 253, 244, 248),
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 12.0,
+                                      left: 10,
+                                      right: 10,
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                GroupMobileChatScreen(
+                                              name: groupData.name,
+                                              members: groupData.membersUid,
+                                              uid: groupData.groupId,
+                                              profilePic: groupData.groupPic,
+                                              isGroupChat: true,
                                             ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Container(
-                                                padding: EdgeInsets.only(
-                                                  top: 4,
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Color.fromARGB(
+                                              255, 253, 244, 248),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                    groupData.groupPic,
+                                                  ),
                                                 ),
-                                                child: Row(
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.04,
+                                                ),
+                                                Column(
                                                   mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    CircleAvatar(
-                                                      radius: 30,
-                                                      backgroundImage:
-                                                          CachedNetworkImageProvider(
-                                                        groupData.groupPic,
+                                                    Text(
+                                                      groupData.name,
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.04,
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          groupData.name,
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.6,
-                                                            child: Text(
-                                                              groupData
-                                                                  .lastMessage,
-                                                            )),
-                                                      ],
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(DateFormat.Hm()
-                                                            .format(groupData
-                                                                .timeSent)),
-                                                        Text(''),
-                                                        // Icon(
-                                                        //   Icons.done_all,
-                                                        //   color: Colors.green[300],
-                                                        // ),
-                                                      ],
-                                                    ),
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.6,
+                                                        child: Text(
+                                                          groupData.lastMessage,
+                                                        )),
                                                   ],
                                                 ),
-                                              ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(DateFormat.Hm().format(
+                                                        groupData.timeSent)),
+                                                    Text(''),
+                                                    // Icon(
+                                                    //   Icons.done_all,
+                                                    //   color: Colors.green[300],
+                                                    // ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                      // InkWell(
-                                      //   onTap: () {
-                                      //     print('pressed');
-                                      //     Navigator.of(context).push(
-                                      //       MaterialPageRoute(
-                                      //         builder: (_) => MobileChatScreen(
-                                      //           name: groupData.name,
-                                      //           uid: groupData.groupId,
-                                      //           profilePic: groupData.groupPic,
-                                      //           isGroupChat: true,
-                                      //         ),
-                                      //       ),
-                                      //     );
-                                      //   },
-                                      //   child: Padding(
-                                      //     padding:
-                                      //         const EdgeInsets.only(bottom: 8.0),
-                                      //     child: ListTile(
-                                      //       title: Text(
-                                      //         groupData.name,
-                                      //         style: const TextStyle(
-                                      //           fontSize: 18,
-                                      //         ),
-                                      //       ),
-                                      //       subtitle: Padding(
-                                      //         padding:
-                                      //             const EdgeInsets.only(top: 6.0),
-                                      //         child: Text(
-                                      //           groupData.lastMessage,
-                                      //           style:
-                                      //               const TextStyle(fontSize: 15),
-                                      //         ),
-                                      //       ),
-                                      //       leading: CircleAvatar(
-                                      //         backgroundImage:
-                                      //             CachedNetworkImageProvider(
-                                      //           groupData.groupPic,
-                                      //         ),
-                                      //         radius: 30,
-                                      //       ),
-                                      //       trailing: Text(
-                                      //         DateFormat.Hm()
-                                      //             .format(groupData.timeSent),
-                                      //         style: const TextStyle(
-                                      //           color: Colors.grey,
-                                      //           fontSize: 13,
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // const Divider(
-                                      //     color: dividerColor, indent: 85),
-                                    ],
-                                  );
-                                },
-                              );
-                            }),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 245, 221, 221),
-                        ),
-                        child: StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(auth.currentUser!.phoneNumber)
-                              .collection('chats')
-                              .orderBy('timeSent', descending: true)
-                              .snapshots(),
-                          builder: (context, snapshots) {
-                            if (snapshots.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                child: LoadingAnimationWidget.flickr(
-                                    leftDotColor: Color(0xFFEB455F),
-                                    rightDotColor: Color(0xFF2B3467),
-                                    size: 30),
-                              );
-                            }
-
-                            if (snapshots.data!.docs.length == 0) {
-                              return Container(
-                                height: height * 0.85,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFfefefe),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    topRight: Radius.circular(30),
+                                    ),
                                   ),
-                                ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image(
-                                          image:
-                                              AssetImage('assets/emptyt.png')),
-                                      Text('No messages found'),
-                                    ],
-                                  ),
-                                ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     print('pressed');
+                                  //     Navigator.of(context).push(
+                                  //       MaterialPageRoute(
+                                  //         builder: (_) => MobileChatScreen(
+                                  //           name: groupData.name,
+                                  //           uid: groupData.groupId,
+                                  //           profilePic: groupData.groupPic,
+                                  //           isGroupChat: true,
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  //   child: Padding(
+                                  //     padding:
+                                  //         const EdgeInsets.only(bottom: 8.0),
+                                  //     child: ListTile(
+                                  //       title: Text(
+                                  //         groupData.name,
+                                  //         style: const TextStyle(
+                                  //           fontSize: 18,
+                                  //         ),
+                                  //       ),
+                                  //       subtitle: Padding(
+                                  //         padding:
+                                  //             const EdgeInsets.only(top: 6.0),
+                                  //         child: Text(
+                                  //           groupData.lastMessage,
+                                  //           style:
+                                  //               const TextStyle(fontSize: 15),
+                                  //         ),
+                                  //       ),
+                                  //       leading: CircleAvatar(
+                                  //         backgroundImage:
+                                  //             CachedNetworkImageProvider(
+                                  //           groupData.groupPic,
+                                  //         ),
+                                  //         radius: 30,
+                                  //       ),
+                                  //       trailing: Text(
+                                  //         DateFormat.Hm()
+                                  //             .format(groupData.timeSent),
+                                  //         style: const TextStyle(
+                                  //           color: Colors.grey,
+                                  //           fontSize: 13,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // const Divider(
+                                  //     color: dividerColor, indent: 85),
+                                ],
                               );
-                            }
+                            },
+                          );
+                        }),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF8E8EE),
+                    ),
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(auth.currentUser!.phoneNumber)
+                          .collection('chats')
+                          .orderBy('timeSent', descending: true)
+                          .snapshots(),
+                      builder: (context, snapshots) {
+                        if (snapshots.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: LoadingAnimationWidget.flickr(
+                                leftDotColor: Color(0xFFEB455F),
+                                rightDotColor: Color(0xFF2B3467),
+                                size: 30),
+                          );
+                        }
 
-                            return Container(
-                              height: height * 0.85,
+                        if (snapshots.data!.docs.length == 0) {
+                          return Container(
+                            height: height * 0.85,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFfefefe),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30),
+                                topRight: Radius.circular(30),
+                              ),
+                            ),
+                            child: Center(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: ListView.builder(
-                                      itemCount: snapshots.data!.docs.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return SizedBox(
-                                          child:
-                                              FutureBuilder<DocumentSnapshot>(
-                                            future: FirebaseFirestore.instance
-                                                .collection('users')
-                                                .doc(snapshots.data!.docs[index]
-                                                    ['contactID'])
-                                                .get(),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.done) {
-                                                var recieverData =
-                                                    snapshot.data!.data()
-                                                        as Map<String, dynamic>;
-                                                return GestureDetector(
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            MobileChatScreen(
-                                                          name: recieverData[
-                                                              'name'],
-                                                          uid: recieverData[
-                                                              'phone'],
-                                                          profilePic:
-                                                              recieverData[
-                                                                  'dp'],
-                                                          isGroupChat: false,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: ChatBox(
-                                                    data: snapshots
-                                                        .data!.docs[index],
-                                                    chatContactData:
-                                                        recieverData,
-                                                  ),
-                                                );
-                                              }
-                                              return Container();
-                                            },
+                                  Image(image: AssetImage('assets/emptyt.png')),
+                                  Text('No messages found'),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: snapshots.data!.docs.length,
+                          controller: scrollController,
+                          shrinkWrap: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              child: FutureBuilder<DocumentSnapshot>(
+                                future: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(snapshots.data!.docs[index]
+                                        ['contactID'])
+                                    .get(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                    var recieverData = snapshot.data!.data()
+                                        as Map<String, dynamic>;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => MobileChatScreen(
+                                              name: recieverData['name'],
+                                              uid: recieverData['phone'],
+                                              profilePic: recieverData['dp'],
+                                              isGroupChat: false,
+                                            ),
                                           ),
                                         );
                                       },
-                                    ),
-                                  ),
-                                ],
+                                      child: ChatBox(
+                                        data: snapshots.data!.docs[index],
+                                        chatContactData: recieverData,
+                                      ),
+                                    );
+                                  }
+                                  return Container();
+                                },
                               ),
                             );
                           },
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                ),
-                floatingActionButton: FloatingActionButton(
-                  backgroundColor: Colors.pink[300],
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => SelectContact(),
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    CupertinoIcons.conversation_bubble,
-                  ),
+                )
+              ]),
+              floatingActionButton: FloatingActionButton(
+                backgroundColor: Colors.pink[300],
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => SelectContact(),
+                    ),
+                  );
+                },
+                child: Icon(
+                  CupertinoIcons.conversation_bubble,
                 ),
               ),
             );

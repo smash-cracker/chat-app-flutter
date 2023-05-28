@@ -38,7 +38,7 @@ class MyApp extends ConsumerWidget {
               bodyText2: GoogleFonts.openSans(),
             ),
             colorScheme: ColorScheme.fromSwatch().copyWith(
-              primary: Colors.pink.shade200,
+              primary: Color(0xFFFDCEDF),
             ),
           ),
           debugShowCheckedModeBanner: false,
