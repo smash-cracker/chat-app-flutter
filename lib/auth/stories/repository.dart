@@ -45,10 +45,127 @@ class StatusRepository {
             '/status/$statusId$uid',
             statusImage,
           );
+      // List<Contact> contacts = [];
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
       List<Contact> contacts = [];
-      if (await FlutterContacts.requestPermission()) {
-        contacts = await FlutterContacts.getContacts(withProperties: true);
-      }
+      Contact contact = Contact(
+        id: "2335",
+        displayName: 'Denny jr',
+        thumbnail: null,
+        photo: null,
+        isStarred: false,
+        name: Name(first: 'Denny', last: 'jr'),
+        phones: [
+          Phone(
+            '+918714257796',
+            normalizedNumber: '+918714257796',
+            label: PhoneLabel.mobile,
+          ),
+        ],
+        // Add other properties as needed
+        emails: [],
+        addresses: [],
+        organizations: [],
+        websites: [],
+        socialMedias: [],
+        events: [],
+        notes: [],
+        accounts: [],
+        groups: [],
+      );
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
+      contacts.add(contact);
+      contact = Contact(
+        id: "2335",
+        displayName: 'Avani',
+        thumbnail: null,
+        photo: null,
+        isStarred: false,
+        name: Name(first: 'Avani', last: ''),
+        phones: [
+          Phone(
+            '+918590872528',
+            normalizedNumber: '+918590872528',
+            label: PhoneLabel.mobile,
+          ),
+        ],
+        // Add other properties as needed
+        emails: [],
+        addresses: [],
+        organizations: [],
+        websites: [],
+        socialMedias: [],
+        events: [],
+        notes: [],
+        accounts: [],
+        groups: [],
+      );
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
+      contacts.add(contact);
+      contact = Contact(
+        id: "2335",
+        displayName: 'Denny',
+        thumbnail: null,
+        photo: null,
+        isStarred: false,
+        name: Name(first: 'Denny', last: ''),
+        phones: [
+          Phone(
+            '+917012719561',
+            normalizedNumber: '+917012719561',
+            label: PhoneLabel.mobile,
+          ),
+        ],
+        // Add other properties as needed
+        emails: [],
+        addresses: [],
+        organizations: [],
+        websites: [],
+        socialMedias: [],
+        events: [],
+        notes: [],
+        accounts: [],
+        groups: [],
+      );
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
+      contacts.add(contact);
+      contact = Contact(
+        id: "2335",
+        displayName: 'Sarath',
+        thumbnail: null,
+        photo: null,
+        isStarred: false,
+        name: Name(first: 'Sarath', last: ''),
+        phones: [
+          Phone(
+            '+917356562246',
+            normalizedNumber: '+91917356562246',
+            label: PhoneLabel.mobile,
+          ),
+        ],
+        // Add other properties as needed
+        emails: [],
+        addresses: [],
+        organizations: [],
+        websites: [],
+        socialMedias: [],
+        events: [],
+        notes: [],
+        accounts: [],
+        groups: [],
+      );
+      // if (await FlutterContacts.requestPermission()) {
+      //   contacts = await FlutterContacts.getContacts(withProperties: true);
+      // }
+      contacts.add(contact);
 
       List<String> uidWhoCanSee = [];
 
@@ -235,7 +352,7 @@ class StatusRepository {
       // }
       contacts.add(contact);
       for (int i = 0; i < contacts.length; i++) {
-        print(contacts[i].phones[0].number);
+        print('checking for ${contacts[i].phones[0].number}');
         var statusesSnapshot = await firestore
             .collection('status')
             .where(

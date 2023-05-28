@@ -359,7 +359,13 @@ class _MainPageState extends ConsumerState<MainPage>
                             }),
                       ),
                       Container(
-                        color: Color(0xFFfefefe),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFfefefe),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                          ),
+                        ),
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('users')
@@ -377,8 +383,33 @@ class _MainPageState extends ConsumerState<MainPage>
                                     size: 30),
                               );
                             }
-                            return SizedBox(
-                              height: 500,
+
+                            if (snapshots.data!.docs.length == 0) {
+                              return Container(
+                                height: height * 0.85,
+                                decoration: BoxDecoration(
+                                  color: Color(0xFFfefefe),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    topRight: Radius.circular(30),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image(
+                                          image:
+                                              AssetImage('assets/emptyt.png')),
+                                      Text('No messages found'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return Container(
+                              height: height * 0.85,
                               child: Column(
                                 children: [
                                   Expanded(

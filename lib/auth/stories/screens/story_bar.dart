@@ -30,7 +30,8 @@ class StatusBar extends ConsumerWidget {
               if (index == (snapshot.data!.length)) {
                 return GestureDetector(
                   onTap: () async {
-                    if (index == (snapshot.data!.length + 1)) {
+                    print('click');
+                    if (index == (snapshot.data!.length)) {
                       File? pickedImage = await pickImageFromGallery(context);
                       if (pickedImage != null) {
                         Navigator.of(context).push(MaterialPageRoute(
