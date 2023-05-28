@@ -58,6 +58,8 @@ class StatusBar extends ConsumerWidget {
                             CircleAvatar(
                               backgroundImage: AssetImage('assets/G0.jpeg'),
                               radius: 30,
+                              backgroundColor:
+                                  Color.fromARGB(255, 253, 244, 248),
                             ),
                             SizedBox(
                               height: 6,
@@ -104,7 +106,7 @@ class StatusBar extends ConsumerWidget {
                                 boxShadow: [
                                   BoxShadow(
                                     blurRadius: 1,
-                                    color: Color.fromARGB(226, 250, 211, 211),
+                                    color: Color.fromARGB(255, 253, 244, 248),
                                     spreadRadius: 3,
                                   )
                                 ],
@@ -113,6 +115,8 @@ class StatusBar extends ConsumerWidget {
                                 backgroundImage:
                                     NetworkImage(statusData.profilePic),
                                 radius: 30,
+                                backgroundColor:
+                                    Color.fromARGB(255, 253, 244, 248),
                               ),
                             ),
                             SizedBox(

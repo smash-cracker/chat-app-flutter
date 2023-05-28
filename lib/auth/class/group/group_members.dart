@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:chat/auth/class/group/group_controller.dart';
 import 'package:chat/utils/contact_box.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -186,6 +187,20 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                 ),
 
                 SizedBox(
+                  width: width * 0.7,
+                  child: CupertinoSearchTextField(
+                    onChanged: (value) {
+                      print(value);
+                      print('value');
+                      setState(() {
+                        searchName = value.toLowerCase();
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+
+                SizedBox(
                   height: 20,
                 ),
                 SizedBox(
@@ -253,8 +268,24 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                 //   blurRadius: 4,
                 // )
               ]),
-          child:
-              GestureDetector(onTap: CreateGroup, child: Text('Create group')),
+          child: GestureDetector(
+            onTap: CreateGroup,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    'Create group',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

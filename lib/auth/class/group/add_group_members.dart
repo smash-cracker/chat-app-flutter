@@ -66,7 +66,7 @@ class _AddGroupMembersState extends ConsumerState<AddGroupMembers> {
           ),
         ),
         title: SizedBox(
-          width: width * 0.7,
+          width: width,
           child: CupertinoSearchTextField(
             onChanged: (value) {
               print(value);
@@ -235,9 +235,10 @@ class _AddGroupMembersState extends ConsumerState<AddGroupMembers> {
                                   selectedContactStringNumber =
                                       '+91$selectedContactStringNumber';
                                 }
-                                if (contact.displayName
-                                    .toLowerCase()
-                                    .contains(searchName)) {
+                                if (searchName.isEmpty ||
+                                    contact.displayName.toLowerCase().contains(
+                                          searchName,
+                                        )) {
                                   print('huh');
                                   return InkWell(
                                     onTap: () {

@@ -35,7 +35,10 @@ class _ChatBoxState extends State<ChatBox> {
           children: [
             CircleAvatar(
               radius: 30,
-              backgroundImage: NetworkImage(widget.chatContactData['dp']),
+              backgroundImage: NetworkImage(
+                widget.chatContactData['dp'],
+              ),
+              backgroundColor: Color.fromARGB(255, 253, 244, 248),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.04,
