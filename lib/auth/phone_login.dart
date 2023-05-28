@@ -21,6 +21,7 @@ class _MyPhoneState extends State<MyPhone> {
   String phoneNumber = '';
   String verificatonId = '';
   String smsCode = '';
+  int count = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -62,123 +63,146 @@ class _MyPhoneState extends State<MyPhone> {
       crossFadeState:
           isFading ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       duration: Duration(seconds: 1),
-      firstChild: Container(
-        margin: EdgeInsets.only(left: 25, right: 25),
-        alignment: Alignment.center,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/phone.png',
-                width: 150,
-                height: 150,
-              ),
-              SizedBox(
-                height: 25,
-              ),
-              Text(
-                "Phone Verification",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                "We need to register your phone without getting started!",
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Container(
-                height: 55,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 40,
-                      child: TextField(
-                        controller: countryController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      "|",
-                      style: TextStyle(fontSize: 33, color: Colors.grey),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                        child: TextField(
-                      onChanged: (v) {
-                        number = v;
-                      },
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Phone",
-                      ),
-                    ))
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 45,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      primary: Colors.pink.shade200,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
-                  onPressed: () async {
-                    setState(() {
-                      isFading = !isFading;
-                    });
-                    await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: '${countryController.text + number}',
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) {},
-                      verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        verificatonId = verificationId;
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
-                    );
-                  },
-                  child: isFading
-                      ? Text("Send the code")
-                      : _isLoading
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : GestureDetector(
-                              onTap: login,
-                              child: Text(
-                                'vertify otp',
-                              ),
-                            ),
-                ),
-              )
-            ],
+      firstChild: Stack(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height - 200,
+            child: Image(
+              image: AssetImage('assets/plane.gif'),
+            ),
           ),
-        ),
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            margin: EdgeInsets.only(left: 25, right: 25),
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Image.asset(
+                  //   'assets/phone.png',
+                  //   width: 150,
+                  //   height: 150,
+                  // ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Text(
+                    "Phone Verification",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  // Text(
+                  //   "We need to register your phone before getting started!",
+                  //   style: TextStyle(
+                  //     fontSize: 16,
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    height: 55,
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        SizedBox(
+                          width: 40,
+                          child: TextField(
+                            controller: countryController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          "|",
+                          style: TextStyle(fontSize: 33, color: Colors.grey),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: TextField(
+                          onChanged: (value) {
+                            number = value;
+                            print(count);
+                            setState(() {
+                              count = value.toString().length;
+                            });
+                          },
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Phone",
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary:
+                              count == 10 ? Colors.pink.shade200 : Colors.grey,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                      onPressed: () async {
+                        if (count == 10) {
+                          setState(() {
+                            isFading = !isFading;
+                          });
+                          await FirebaseAuth.instance.verifyPhoneNumber(
+                            phoneNumber: '${countryController.text + number}',
+                            verificationCompleted:
+                                (PhoneAuthCredential credential) {},
+                            verificationFailed: (FirebaseAuthException e) {},
+                            codeSent:
+                                (String verificationId, int? resendToken) {
+                              verificatonId = verificationId;
+                            },
+                            codeAutoRetrievalTimeout:
+                                (String verificationId) {},
+                          );
+                        } else {
+                          null;
+                        }
+                      },
+                      child: isFading
+                          ? Text("Send the code")
+                          : _isLoading
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : GestureDetector(
+                                  onTap: login,
+                                  child: Text(
+                                    'vertify otp',
+                                  ),
+                                ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
       secondChild: Container(
         margin: EdgeInsets.only(left: 25, right: 25),
