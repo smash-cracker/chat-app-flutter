@@ -36,17 +36,24 @@ class _GroupNameState extends State<GroupName> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
+      backgroundColor: Color(0xFF4ECDAF),
       appBar: AppBar(
-        // backgroundColor: ,
+        backgroundColor: Color(0xFF4ECDAF),
         title: Text('Set Group Name'),
         elevation: 0,
       ),
-      body: Center(
-          child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
+      body: SingleChildScrollView(
+        child: Center(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            SizedBox(
+              height: 300,
+              width: width,
+              child: Image(
+                image: AssetImage('assets/groupname2.gif'),
+              ),
+            ),
             SizedBox(
               height: 100,
               child: ScrollSnapList(
@@ -64,19 +71,22 @@ class _GroupNameState extends State<GroupName> {
             SizedBox(
               height: height * 0.02,
             ),
-            Container(
-              height: 80,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: groupname,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    labelText: 'set group name',
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: groupname,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'set group name',
+                    ),
                   ),
                 ),
               ),
@@ -84,37 +94,41 @@ class _GroupNameState extends State<GroupName> {
             SizedBox(
               height: height * 0.02,
             ),
-            GestureDetector(
-              onTap: () {
-                print(image);
-                if (image != null && groupname.text != '') {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => GroupMembers(
-                            contactList: widget.contactList,
-                            groupName: groupname.text,
-                            image: image!,
-                          )));
-                } else {
-                  showSnackBar(
-                      context: context, content: 'Please choose dp and title');
-                }
-              },
-              child: Container(
-                height: height * 0.08,
-                width: width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.pink[300],
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: GestureDetector(
+                onTap: () {
+                  print(image);
+                  if (image != null && groupname.text != '') {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => GroupMembers(
+                              contactList: widget.contactList,
+                              groupName: groupname.text,
+                              image: image!,
+                            )));
+                  } else {
+                    showSnackBar(
+                        context: context,
+                        content: 'Please choose dp and title');
+                  }
+                },
+                child: Container(
+                  height: height * 0.08,
+                  width: width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.pink[300],
+                  ),
+                  child: Center(child: Text('Next')),
                 ),
-                child: Center(child: Text('Next')),
               ),
             ),
             SizedBox(
               height: height * 0.03,
             ),
           ],
-        ),
-      )),
+        )),
+      ),
     );
   }
 

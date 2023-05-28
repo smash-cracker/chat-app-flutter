@@ -152,6 +152,7 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
             width: 420,
             child: TextField(
               focusNode: focusNode,
+              autofocus: false,
               controller: _messageController,
               onChanged: (value) {
                 if (value.isNotEmpty) {

@@ -4,6 +4,7 @@ import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/phone_login.dart';
 import 'package:chat/auth/usercheck.dart';
 import 'package:chat/screen/mainpage.dart';
+import 'package:chat/utils/keyboard_dismiss.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -26,35 +27,37 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            titleTextStyle: TextStyle(fontFamily: 'RaleWay'),
+    return DismissKeyboard(
+      child: MaterialApp(
+          theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              titleTextStyle: TextStyle(fontFamily: 'RaleWay'),
+            ),
+            textTheme: TextTheme(
+              bodyText1: GoogleFonts.openSans(),
+              bodyText2: GoogleFonts.openSans(),
+            ),
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+              primary: Colors.pink.shade200,
+            ),
           ),
-          textTheme: TextTheme(
-            bodyText1: GoogleFonts.openSans(),
-            bodyText2: GoogleFonts.openSans(),
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Chat',
+          home: ref.watch(userDataAuthProvider).when(
+              data: (user) {
+                print("user");
+                print(auth.currentUser);
+                if (auth.currentUser == null) {
+                  return MyPhone();
+                }
+                return MainPage();
+              },
+              error: (error, trace) {
+                return Container();
+              },
+              loading: () => const Loader())
+          // const UserCheck(),
           ),
-          colorScheme: ColorScheme.fromSwatch().copyWith(
-            primary: Colors.pink.shade200,
-          ),
-        ),
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Chat',
-        home: ref.watch(userDataAuthProvider).when(
-            data: (user) {
-              print("user");
-              print(auth.currentUser);
-              if (auth.currentUser == null) {
-                return MyPhone();
-              }
-              return MainPage();
-            },
-            error: (error, trace) {
-              return Container();
-            },
-            loading: () => const Loader())
-        // const UserCheck(),
-        );
+    );
   }
 }
