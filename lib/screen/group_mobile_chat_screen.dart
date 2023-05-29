@@ -179,6 +179,7 @@ class GroupMobileChatScreen extends ConsumerWidget {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           CircleAvatar(
                             backgroundColor: Colors.pink[100],
@@ -188,6 +189,7 @@ class GroupMobileChatScreen extends ConsumerWidget {
                             width: 10,
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 name.toString(),
@@ -219,6 +221,7 @@ class GroupMobileChatScreen extends ConsumerWidget {
                         );
                       },
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           CircleAvatar(
                             backgroundImage: NetworkImage(profilePic),
@@ -228,6 +231,7 @@ class GroupMobileChatScreen extends ConsumerWidget {
                             width: 10,
                           ),
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 name.toString(),
@@ -236,9 +240,14 @@ class GroupMobileChatScreen extends ConsumerWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              Text(
-                                snapshot.data!.isOnline ? 'online' : 'offline',
-                                style: TextStyle(color: Colors.green[300]),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  snapshot.data!.isOnline
+                                      ? 'online'
+                                      : 'offline',
+                                  style: TextStyle(color: Colors.green[300]),
+                                ),
                               ),
                             ],
                           ),

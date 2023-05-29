@@ -142,193 +142,213 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
     final messageReply = ref.watch(messageReplyProvider);
     final isShowMessageReply = messageReply != null;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-      ),
-      child: Column(
-        children: [
-          isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
-          SizedBox(
-            width: 420,
-            child: TextField(
-              focusNode: focusNode,
-              autofocus: false,
-              controller: _messageController,
-              onChanged: (value) {
-                if (value.isNotEmpty) {
-                  setState(() {
-                    sendButton = true;
-                  });
-                } else {
-                  setState(() {
-                    sendButton = false;
-                  });
-                }
-              },
-              style: TextStyle(color: Colors.black),
-              decoration: InputDecoration(
-                suffixIcon: SizedBox(
-                  width: 200,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.pink[100],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (!isRecording) {
-                                  sendTextMessage();
-                                } else {
-                                  FocusScope.of(context).unfocus();
-                                  stopRecord();
-                                  setState(() {
-                                    isRecording = false;
-                                  });
-                                }
-                              },
-                              child: Icon(
-                                sendButton
-                                    ? Icons.send
-                                    : isRecording
-                                        ? Icons.close
-                                        : Icons.mic,
-                                color: Colors.white,
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+            color: Color(0xFFF8E8EE), borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+          ),
+          child: Column(
+            children: [
+              isShowMessageReply
+                  ? const MessageReplyPreview()
+                  : const SizedBox(),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF8E8EE),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20),
+                  ),
+                ),
+                width: 420,
+                child: TextField(
+                  focusNode: focusNode,
+                  autofocus: false,
+                  controller: _messageController,
+                  onChanged: (value) {
+                    if (value.isNotEmpty) {
+                      setState(() {
+                        sendButton = true;
+                      });
+                    } else {
+                      setState(() {
+                        sendButton = false;
+                      });
+                    }
+                  },
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    suffixIcon: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xFFF8E8EE),
+                          borderRadius: BorderRadius.circular(20)),
+                      width: 200,
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.pink[100],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (!isRecording) {
+                                      sendTextMessage();
+                                    } else {
+                                      FocusScope.of(context).unfocus();
+                                      stopRecord();
+                                      setState(() {
+                                        isRecording = false;
+                                      });
+                                    }
+                                  },
+                                  child: Icon(
+                                    sendButton
+                                        ? Icons.send
+                                        : isRecording
+                                            ? Icons.close
+                                            : Icons.mic,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      isRecording
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.pink[100],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: sendTextMessage,
-                                    child: Icon(
-                                      Icons.send,
-                                      color: Colors.white,
+                          isRecording
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[100],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: sendTextMessage,
+                                        child: Icon(
+                                          Icons.send,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      !isRecording
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.pink[100],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: selectGif,
-                                    child: Icon(
-                                      Icons.gif,
-                                      color: Colors.white,
+                                )
+                              : Container(),
+                          !isRecording
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[100],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: selectGif,
+                                        child: Icon(
+                                          Icons.gif,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      !isRecording
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.pink[100],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: selectImage,
-                                    child: Icon(
-                                      Icons.camera,
-                                      color: Colors.white,
+                                )
+                              : Container(),
+                          !isRecording
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[100],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: selectImage,
+                                        child: Icon(
+                                          Icons.camera,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      !isRecording
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.pink[100],
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: GestureDetector(
-                                    onTap: selectVideo,
-                                    child: Icon(
-                                      Icons.video_call,
-                                      color: Colors.white,
+                                )
+                              : Container(),
+                          !isRecording
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.pink[100],
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: selectVideo,
+                                        child: Icon(
+                                          Icons.video_call,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : Container(),
-                      isRecording
-                          ? StreamBuilder<RecordingDisposition>(
-                              stream: _soundRecorder!.onProgress,
-                              builder: (context, snapshot) {
-                                final duration = snapshot.hasData
-                                    ? snapshot.data!.duration
-                                    : Duration.zero;
+                                )
+                              : Container(),
+                          isRecording
+                              ? StreamBuilder<RecordingDisposition>(
+                                  stream: _soundRecorder!.onProgress,
+                                  builder: (context, snapshot) {
+                                    final duration = snapshot.hasData
+                                        ? snapshot.data!.duration
+                                        : Duration.zero;
 
-                                String formattime(int n) =>
-                                    n.toString().padLeft(2);
-                                final min =
-                                    formattime(duration.inMinutes.remainder(60))
+                                    String formattime(int n) =>
+                                        n.toString().padLeft(2);
+                                    final min = formattime(
+                                            duration.inMinutes.remainder(60))
                                         .padLeft(2);
-                                final sec =
-                                    formattime(duration.inSeconds.remainder(60))
+                                    final sec = formattime(
+                                            duration.inSeconds.remainder(60))
                                         .padLeft(2);
-                                return Text('${min}:${sec}');
-                              },
-                            )
-                          : Container(),
-                    ],
+                                    return Text('${min}:${sec}');
+                                  },
+                                )
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                    hintText: 'Type message...',
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.all(10),
                   ),
                 ),
-                hintText: 'Type message...',
-                hintStyle: TextStyle(color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                  borderSide: const BorderSide(
-                    width: 0,
-                    style: BorderStyle.none,
-                  ),
-                ),
-                contentPadding: const EdgeInsets.all(10),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

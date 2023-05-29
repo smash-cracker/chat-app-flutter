@@ -294,7 +294,7 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                   backgroundColor: Colors.transparent,
                   content: AwesomeSnackbarContent(
                     title: 'Yay',
-                    message: 'Game published. Go to personal games.',
+                    message: 'Group created.',
 
                     /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
                     contentType: ContentType.success,

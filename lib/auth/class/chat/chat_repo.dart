@@ -186,6 +186,7 @@ class ChatRepository {
       timeSent: timeSent,
       messageID: messageID,
       isSeen: false,
+      senderName: senderUsername,
       repliedMessage: messageReply == null ? '' : messageReply.message,
       repliedTo: messageReply == null
           ? ''

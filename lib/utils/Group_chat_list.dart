@@ -113,6 +113,7 @@ class _ChatListForGroupState extends ConsumerState<ChatListForGroup> {
                   message: messageData.text,
                   date: DateFormat('Hm').format(messageData.timeSent),
                   type: messageData.type,
+                  senderName: messageData.senderName,
                   username: messageData.repliedTo,
                   repliedMessageType: messageData.repliedMessageType,
                   onRightSwipe: () => onMessageSwipe(

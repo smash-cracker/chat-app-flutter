@@ -62,9 +62,11 @@ class _MainPageState extends ConsumerState<MainPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('changed app lifecycle state');
     super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.resumed:
+        print('resumed');
         ref.read(authControllerProvider).setUserState(true);
         break;
 
