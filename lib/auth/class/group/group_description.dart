@@ -281,13 +281,19 @@ class _GroupDescription extends ConsumerState<GroupDescription> {
                                     String phoneNumber =
                                         widget.contactList[index]['phone'];
                                     String groupId = widget.groupId;
+                                    print(widget.contactList[index]
+                                        ['messagesFrom']);
                                     print(phoneNumber);
+                                    print(widget.contactList[index]['name']);
                                     await _firestore
                                         .collection('groups')
                                         .doc(groupId)
                                         .update({
                                       'membersUid': FieldValue.arrayRemove([
                                         {
+                                          'messagesFrom':
+                                              widget.contactList[index]
+                                                  ['messagesFrom'],
                                           'name': widget.contactList[index]
                                               ['name'],
                                           'phone': phoneNumber,
