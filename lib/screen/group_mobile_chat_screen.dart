@@ -82,6 +82,36 @@ class GroupMobileChatScreen extends ConsumerWidget {
     await collection.doc(docId).update({'membersUid': list});
   }
 
+  Future<void> exitGroupFrom(
+      String docId, String phoneNumber, DateTime newMessagesFrom) async {
+    CollectionReference collection =
+        FirebaseFirestore.instance.collection('groups');
+
+    // Fetch the document
+    DocumentSnapshot snapshot = await collection.doc(uid).get();
+    if (!snapshot.exists) {
+      print('Document does not exist');
+      return;
+    }
+
+    // Get the current list of maps
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    List<dynamic> list = data['membersUid'];
+
+    // Find the map with the matching phone number
+    for (int i = 0; i < list.length; i++) {
+      if (list[i]['phone'] == phoneNumber) {
+        // Update the messagesFrom field
+        list.removeAt(i);
+        break;
+      }
+    }
+
+    // Update the document with the modified list
+    await collection.doc(docId).update({'membersUid': list});
+  }
+
   final String name;
   final String uid;
   final String profilePic;
@@ -280,6 +310,17 @@ class GroupMobileChatScreen extends ConsumerWidget {
                   onTap: () {
                     // signOut(context);
                     updateMessagesFrom(
+                        uid,
+                        FirebaseAuth.instance.currentUser!.phoneNumber!,
+                        DateTime.now());
+                    Navigator.of(context).pop();
+                  },
+                ),
+                PopupMenuItem(
+                  child: Text('Exit group'),
+                  onTap: () {
+                    // signOut(context);
+                    exitGroupFrom(
                         uid,
                         FirebaseAuth.instance.currentUser!.phoneNumber!,
                         DateTime.now());

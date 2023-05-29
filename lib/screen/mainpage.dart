@@ -428,7 +428,7 @@ class _MainPageState extends ConsumerState<MainPage>
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image(image: AssetImage('assets/emptyt.png')),
-                                  Text('No messages found'),
+                                  Text('No personal found'),
                                 ],
                               ),
                             ),
