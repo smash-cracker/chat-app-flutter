@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-
+import 'package:boxicons/boxicons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat/auth/class/chat/chat_controller.dart';
 import 'package:chat/auth/class/controller.dart';
@@ -22,6 +22,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -41,6 +42,66 @@ class _MainPageState extends ConsumerState<MainPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> exitGroupFrom(
+      String docId, String phoneNumber, DateTime newMessagesFrom) async {
+    CollectionReference collection =
+        FirebaseFirestore.instance.collection('groups');
+
+    // Fetch the document
+    DocumentSnapshot snapshot = await collection.doc(docId).get();
+    if (!snapshot.exists) {
+      print('Document does not exist');
+      return;
+    }
+
+    // Get the current list of maps
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    List<dynamic> list = data['membersUid'];
+
+    // Find the map with the matching phone number
+    for (int i = 0; i < list.length; i++) {
+      if (list[i]['phone'] == phoneNumber) {
+        // Update the messagesFrom field
+        list.removeAt(i);
+        break;
+      }
+    }
+
+    // Update the document with the modified list
+    await collection.doc(docId).update({'membersUid': list});
+  }
+
+  Future<void> updateMessagesFrom(
+      String docId, String phoneNumber, DateTime newMessagesFrom) async {
+    CollectionReference collection =
+        FirebaseFirestore.instance.collection('groups');
+
+    // Fetch the document
+    DocumentSnapshot snapshot = await collection.doc(docId).get();
+    if (!snapshot.exists) {
+      print('Document does not exist');
+      return;
+    }
+
+    // Get the current list of maps
+    final data = snapshot.data() as Map<String, dynamic>;
+
+    List<dynamic> list = data['membersUid'];
+
+    // Find the map with the matching phone number
+    for (int i = 0; i < list.length; i++) {
+      if (list[i]['phone'] == phoneNumber) {
+        // Update the messagesFrom field
+        list[i]['messagesFrom'] = newMessagesFrom;
+        break;
+      }
+    }
+
+    // Update the document with the modified list
+    await collection.doc(docId).update({'membersUid': list});
   }
 
   Future<void> signOut(BuildContext context) async {
@@ -256,134 +317,135 @@ class _MainPageState extends ConsumerState<MainPage>
                                           ),
                                         );
                                       },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 253, 244, 248),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 4.0, top: 4),
-                                          child: Container(
-                                            padding: EdgeInsets.only(
-                                              bottom: 4,
+                                      child: Slidable(
+                                        startActionPane: ActionPane(
+                                          motion: const StretchMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              label: 'Exit group',
+                                              borderRadius:
+                                                  const BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                bottomLeft: Radius.circular(
+                                                  10,
+                                                ),
+                                              ),
+                                              onPressed: ((context) {
+                                                exitGroupFrom(
+                                                    groupData.groupId,
+                                                    FirebaseAuth
+                                                        .instance
+                                                        .currentUser!
+                                                        .phoneNumber!,
+                                                    DateTime.now());
+                                              }),
+                                              backgroundColor:
+                                                  const Color(0xFFF8E8EE),
+                                              icon: Boxicons.bx_door_open,
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                    groupData.groupPic,
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.04,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      groupData.name,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                          ],
+                                        ),
+                                        endActionPane: ActionPane(
+                                          motion: const StretchMotion(),
+                                          children: [
+                                            SlidableAction(
+                                              label: 'clear group',
+                                              onPressed: ((context) {
+                                                updateMessagesFrom(
+                                                    groupData.groupId,
+                                                    FirebaseAuth
+                                                        .instance
+                                                        .currentUser!
+                                                        .phoneNumber!,
+                                                    DateTime.now());
+                                              }),
+                                              backgroundColor:
+                                                  const Color(0xFFF8E8EE),
+                                              icon: Icons.delete,
+                                            ),
+                                          ],
+                                        ),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 253, 244, 248),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 4.0, top: 4),
+                                            child: Container(
+                                              padding: EdgeInsets.only(
+                                                bottom: 4,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundImage:
+                                                        CachedNetworkImageProvider(
+                                                      groupData.groupPic,
                                                     ),
-                                                    SizedBox(
-                                                        width: MediaQuery.of(
-                                                                    context)
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
                                                                 .size
                                                                 .width *
-                                                            0.6,
-                                                        child: Text(
-                                                          groupData.lastMessage,
-                                                        )),
-                                                  ],
-                                                ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(DateFormat.Hm().format(
-                                                        groupData.timeSent)),
-                                                    Text(''),
-                                                    // Icon(
-                                                    //   Icons.done_all,
-                                                    //   color: Colors.green[300],
-                                                    // ),
-                                                  ],
-                                                ),
-                                              ],
+                                                            0.04,
+                                                  ),
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        groupData.name,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.6,
+                                                          child: Text(
+                                                            groupData
+                                                                .lastMessage,
+                                                          )),
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(DateFormat.Hm()
+                                                          .format(groupData
+                                                              .timeSent)),
+                                                      Text(''),
+                                                      // Icon(
+                                                      //   Icons.done_all,
+                                                      //   color: Colors.green[300],
+                                                      // ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     print('pressed');
-                                  //     Navigator.of(context).push(
-                                  //       MaterialPageRoute(
-                                  //         builder: (_) => MobileChatScreen(
-                                  //           name: groupData.name,
-                                  //           uid: groupData.groupId,
-                                  //           profilePic: groupData.groupPic,
-                                  //           isGroupChat: true,
-                                  //         ),
-                                  //       ),
-                                  //     );
-                                  //   },
-                                  //   child: Padding(
-                                  //     padding:
-                                  //         const EdgeInsets.only(bottom: 8.0),
-                                  //     child: ListTile(
-                                  //       title: Text(
-                                  //         groupData.name,
-                                  //         style: const TextStyle(
-                                  //           fontSize: 18,
-                                  //         ),
-                                  //       ),
-                                  //       subtitle: Padding(
-                                  //         padding:
-                                  //             const EdgeInsets.only(top: 6.0),
-                                  //         child: Text(
-                                  //           groupData.lastMessage,
-                                  //           style:
-                                  //               const TextStyle(fontSize: 15),
-                                  //         ),
-                                  //       ),
-                                  //       leading: CircleAvatar(
-                                  //         backgroundImage:
-                                  //             CachedNetworkImageProvider(
-                                  //           groupData.groupPic,
-                                  //         ),
-                                  //         radius: 30,
-                                  //       ),
-                                  //       trailing: Text(
-                                  //         DateFormat.Hm()
-                                  //             .format(groupData.timeSent),
-                                  //         style: const TextStyle(
-                                  //           color: Colors.grey,
-                                  //           fontSize: 13,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  // const Divider(
-                                  //     color: dividerColor, indent: 85),
                                 ],
                               );
                             },
