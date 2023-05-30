@@ -22,7 +22,7 @@ void main() async {
 class MyApp extends ConsumerWidget {
   MyApp({super.key});
 
-  // This widget is the root of your application.
+  // This widget is the root of the application.
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   @override

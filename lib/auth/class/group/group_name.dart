@@ -119,7 +119,14 @@ class _GroupNameState extends State<GroupName> {
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.pink[300],
                   ),
-                  child: Center(child: Text('Next')),
+                  child: Center(
+                      child: Text(
+                    'Next',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
                 ),
               ),
             ),

@@ -61,15 +61,15 @@ class StatusBar extends ConsumerWidget {
                               backgroundColor:
                                   Color.fromARGB(255, 253, 244, 248),
                             ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              'Add story',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
+                            // SizedBox(
+                            //   height: 6,
+                            // ),
+                            // Text(
+                            //   'Add story',
+                            //   style: TextStyle(
+                            //     fontWeight: FontWeight.w300,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -119,15 +119,15 @@ class StatusBar extends ConsumerWidget {
                                     Color.fromARGB(255, 253, 244, 248),
                               ),
                             ),
-                            SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              statusData.username,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
+                            // SizedBox(
+                            //   height: 6,
+                            // ),
+                            // Text(
+                            //   statusData.username,
+                            //   style: TextStyle(
+                            //     fontWeight: FontWeight.w300,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

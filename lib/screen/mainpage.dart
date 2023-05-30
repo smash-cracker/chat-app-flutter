@@ -201,7 +201,7 @@ class _MainPageState extends ConsumerState<MainPage>
                       child: Text(''),
                     ),
                   ),
-                  expandedHeight: height * 0.2,
+                  expandedHeight: height * 0.15,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Padding(
                       padding: const EdgeInsets.only(
@@ -237,7 +237,7 @@ class _MainPageState extends ConsumerState<MainPage>
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      top: 12.0,
+                                      bottom: 6.0,
                                       left: 10,
                                       right: 10,
                                     ),
@@ -264,10 +264,11 @@ class _MainPageState extends ConsumerState<MainPage>
                                               BorderRadius.circular(20),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.only(
+                                              bottom: 4.0, top: 4),
                                           child: Container(
                                             padding: EdgeInsets.only(
-                                              top: 4,
+                                              bottom: 4,
                                             ),
                                             child: Row(
                                               mainAxisAlignment:

@@ -199,9 +199,11 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                     ],
                   ),
                 ),
-
                 SizedBox(
-                  width: width * 0.7,
+                  height: 10,
+                ),
+                SizedBox(
+                  width: width,
                   child: CupertinoSearchTextField(
                     onChanged: (value) {
                       print(value);
@@ -220,7 +222,7 @@ class _GroupMembersState extends ConsumerState<GroupMembers> {
                 SizedBox(
                     height: height * 0.8,
                     child: ListView.builder(
-                      itemCount: widget.contactList.length,
+                      itemCount: widget.contactList.length - 2,
                       itemBuilder: (context, index) {
                         int randomNumber = generateRandomNumber();
 
