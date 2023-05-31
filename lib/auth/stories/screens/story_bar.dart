@@ -16,22 +16,27 @@ class StatusBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FutureBuilder<List<Status>>(
-        future: ref.read(statusControllerProvider).getStatus(context),
+    return StreamBuilder<List<Status>>(
+        stream: ref.watch(statusControllerProvider).getStatus(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Text('');
           }
-
+          int count = 0;
+          if (snapshot.data == null) {
+            count = 0;
+          } else {
+            count = snapshot.data!.length;
+          }
           return ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: snapshot.data!.length + 1,
+            itemCount: count + 1,
             itemBuilder: (BuildContext context, int index) {
-              if (index == (snapshot.data!.length)) {
+              if (index == (count)) {
                 return GestureDetector(
                   onTap: () async {
                     print('click');
-                    if (index == (snapshot.data!.length)) {
+                    if (index == (count)) {
                       File? pickedImage = await pickImageFromGallery(context);
                       if (pickedImage != null) {
                         Navigator.of(context).push(MaterialPageRoute(

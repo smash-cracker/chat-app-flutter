@@ -27,7 +27,7 @@ class _StatusScreenState extends State<StatusScreen> {
   void initStoryPageItems() {
     for (int i = 0; i < widget.status.photoUrl.length; i++) {
       storyItems.add(StoryItem.pageImage(
-        url: widget.status.photoUrl[i],
+        url: widget.status.photoUrl[i]['photoUrl'],
         controller: controller,
       ));
     }

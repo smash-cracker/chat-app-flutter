@@ -190,7 +190,7 @@ class StatusRepository {
         print(uidWhoCanSee);
       }
 
-      List<String> statusImageUrls = [];
+      List<Map<String, dynamic>> statusImageUrls = [];
       var statusesSnapshot = await firestore
           .collection('status')
           .where(
@@ -202,7 +202,10 @@ class StatusRepository {
       if (statusesSnapshot.docs.isNotEmpty) {
         Status status = Status.fromMap(statusesSnapshot.docs[0].data());
         statusImageUrls = status.photoUrl;
-        statusImageUrls.add(imageurl);
+        statusImageUrls.add({
+          'photoUrl': imageurl,
+          'createdAt': DateTime.now(),
+        });
         await firestore
             .collection('status')
             .doc(statusesSnapshot.docs[0].id)
@@ -211,7 +214,12 @@ class StatusRepository {
         });
         return;
       } else {
-        statusImageUrls = [imageurl];
+        statusImageUrls = [
+          {
+            'photoUrl': imageurl,
+            'createdAt': DateTime.now(),
+          }
+        ];
       }
 
       Status status = Status(
@@ -231,155 +239,182 @@ class StatusRepository {
     }
   }
 
-  Future<List<Status>> getStatus(BuildContext context) async {
-    List<Status> statusData = [];
-    try {
-      List<Contact> contacts = [];
-      Contact contact = Contact(
-        id: "2335",
-        displayName: 'Denny jr',
-        thumbnail: null,
-        photo: null,
-        isStarred: false,
-        name: Name(first: 'Denny', last: 'jr'),
-        phones: [
-          Phone(
-            '+918714257796',
-            normalizedNumber: '+918714257796',
-            label: PhoneLabel.mobile,
-          ),
-        ],
-        // Add other properties as needed
-        emails: [],
-        addresses: [],
-        organizations: [],
-        websites: [],
-        socialMedias: [],
-        events: [],
-        notes: [],
-        accounts: [],
-        groups: [],
-      );
-      // if (await FlutterContacts.requestPermission()) {
-      //   contacts = await FlutterContacts.getContacts(withProperties: true);
-      // }
-      contacts.add(contact);
-      contact = Contact(
-        id: "2335",
-        displayName: 'Avani',
-        thumbnail: null,
-        photo: null,
-        isStarred: false,
-        name: Name(first: 'Avani', last: ''),
-        phones: [
-          Phone(
-            '+918590872528',
-            normalizedNumber: '+918590872528',
-            label: PhoneLabel.mobile,
-          ),
-        ],
-        // Add other properties as needed
-        emails: [],
-        addresses: [],
-        organizations: [],
-        websites: [],
-        socialMedias: [],
-        events: [],
-        notes: [],
-        accounts: [],
-        groups: [],
-      );
-      // if (await FlutterContacts.requestPermission()) {
-      //   contacts = await FlutterContacts.getContacts(withProperties: true);
-      // }
-      contacts.add(contact);
-      contact = Contact(
-        id: "2335",
-        displayName: 'Denny',
-        thumbnail: null,
-        photo: null,
-        isStarred: false,
-        name: Name(first: 'Denny', last: ''),
-        phones: [
-          Phone(
-            '+917012719561',
-            normalizedNumber: '+917012719561',
-            label: PhoneLabel.mobile,
-          ),
-        ],
-        // Add other properties as needed
-        emails: [],
-        addresses: [],
-        organizations: [],
-        websites: [],
-        socialMedias: [],
-        events: [],
-        notes: [],
-        accounts: [],
-        groups: [],
-      );
-      // if (await FlutterContacts.requestPermission()) {
-      //   contacts = await FlutterContacts.getContacts(withProperties: true);
-      // }
-      contacts.add(contact);
-      contact = Contact(
-        id: "2335",
-        displayName: 'Sarath',
-        thumbnail: null,
-        photo: null,
-        isStarred: false,
-        name: Name(first: 'Sarath', last: ''),
-        phones: [
-          Phone(
-            '+917356562246',
-            normalizedNumber: '+91917356562246',
-            label: PhoneLabel.mobile,
-          ),
-        ],
-        // Add other properties as needed
-        emails: [],
-        addresses: [],
-        organizations: [],
-        websites: [],
-        socialMedias: [],
-        events: [],
-        notes: [],
-        accounts: [],
-        groups: [],
-      );
-      // if (await FlutterContacts.requestPermission()) {
-      //   contacts = await FlutterContacts.getContacts(withProperties: true);
-      // }
-      contacts.add(contact);
-      for (int i = 0; i < contacts.length; i++) {
-        print('checking for ${contacts[i].phones[0].number}');
-        var statusesSnapshot = await firestore
-            .collection('status')
-            .where(
-              'phoneNumber',
-              isEqualTo: contacts[i].phones[0].number.replaceAll(
-                    ' ',
-                    '',
-                  ),
-            )
-            .where(
-              'createdAt',
-              isGreaterThan: DateTime.now()
-                  .subtract(const Duration(hours: 24))
-                  .millisecondsSinceEpoch,
-            )
-            .get();
-        for (var tempData in statusesSnapshot.docs) {
-          Status tempStatus = Status.fromMap(tempData.data());
-          print(tempStatus.whoCanSee);
-          if (tempStatus.whoCanSee.contains(auth.currentUser!.phoneNumber)) {
-            statusData.add(tempStatus);
+  Stream<List<Status>> getStatus(BuildContext context) {
+    print("xxxxxxxxxxxxxxxxxxxxxx");
+    List<Contact> contacts = [];
+    Contact contact = Contact(
+      id: "2335",
+      displayName: 'Denny jr',
+      thumbnail: null,
+      photo: null,
+      isStarred: false,
+      name: Name(first: 'Denny', last: 'jr'),
+      phones: [
+        Phone(
+          '+918714257796',
+          normalizedNumber: '+918714257796',
+          label: PhoneLabel.mobile,
+        ),
+      ],
+      // Add other properties as needed
+      emails: [],
+      addresses: [],
+      organizations: [],
+      websites: [],
+      socialMedias: [],
+      events: [],
+      notes: [],
+      accounts: [],
+      groups: [],
+    );
+    // if (await FlutterContacts.requestPermission()) {
+    //   contacts = await FlutterContacts.getContacts(withProperties: true);
+    // }
+    contacts.add(contact);
+    contact = Contact(
+      id: "2335",
+      displayName: 'Avani',
+      thumbnail: null,
+      photo: null,
+      isStarred: false,
+      name: Name(first: 'Avani', last: ''),
+      phones: [
+        Phone(
+          '+918590872528',
+          normalizedNumber: '+918590872528',
+          label: PhoneLabel.mobile,
+        ),
+      ],
+      // Add other properties as needed
+      emails: [],
+      addresses: [],
+      organizations: [],
+      websites: [],
+      socialMedias: [],
+      events: [],
+      notes: [],
+      accounts: [],
+      groups: [],
+    );
+    // if (await FlutterContacts.requestPermission()) {
+    //   contacts = await FlutterContacts.getContacts(withProperties: true);
+    // }
+    contacts.add(contact);
+    contact = Contact(
+      id: "2335",
+      displayName: 'Denny',
+      thumbnail: null,
+      photo: null,
+      isStarred: false,
+      name: Name(first: 'Denny', last: ''),
+      phones: [
+        Phone(
+          '+917012719561',
+          normalizedNumber: '+917012719561',
+          label: PhoneLabel.mobile,
+        ),
+      ],
+      // Add other properties as needed
+      emails: [],
+      addresses: [],
+      organizations: [],
+      websites: [],
+      socialMedias: [],
+      events: [],
+      notes: [],
+      accounts: [],
+      groups: [],
+    );
+    // if (await FlutterContacts.requestPermission()) {
+    //   contacts = await FlutterContacts.getContacts(withProperties: true);
+    // }
+    contacts.add(contact);
+    contact = Contact(
+      id: "2335",
+      displayName: 'Sarath',
+      thumbnail: null,
+      photo: null,
+      isStarred: false,
+      name: Name(first: 'Sarath', last: ''),
+      phones: [
+        Phone(
+          '+917356562246',
+          normalizedNumber: '+91917356562246',
+          label: PhoneLabel.mobile,
+        ),
+      ],
+      // Add other properties as needed
+      emails: [],
+      addresses: [],
+      organizations: [],
+      websites: [],
+      socialMedias: [],
+      events: [],
+      notes: [],
+      accounts: [],
+      groups: [],
+    );
+    // if (await FlutterContacts.requestPermission()) {
+    //   contacts = await FlutterContacts.getContacts(withProperties: true);
+    // }
+    contacts.add(contact);
+
+    return firestore.collection('status').snapshots().map((stat) {
+      List<Status> statusData = [];
+      for (var doc in stat.docs) {
+        var stats = Status.fromMap(doc.data());
+
+        for (var x in stats.whoCanSee) {
+          if (x == auth.currentUser!.phoneNumber) {
+            List<Map<String, dynamic>> indexes = [];
+            for (var x in stats.photoUrl) {
+              if (!(DateTime.now().isAfter(x['createdAt'].toDate()))) {
+                indexes.add(x);
+              }
+            }
+            for (var x in indexes) {
+              stats.photoUrl.remove(x);
+            }
           }
         }
+        if (stats.photoUrl.isNotEmpty) {
+          statusData.add(stats);
+        }
       }
-    } catch (e) {
-      print(e.toString());
-    }
-    return statusData;
+
+      return statusData;
+    });
   }
 }
+//       for (int i = 0; i < contacts.length; i++) {
+//         print('checking for ${contacts[i].phones[0].number}');
+//         var statusesSnapshot = firestore
+//             .collection('status')
+//             .where(
+//               'phoneNumber',
+//               isEqualTo: contacts[i].phones[0].number.replaceAll(
+//                     ' ',
+//                     '',
+//                   ),
+//             )
+//             .where(
+//               'createdAt',
+//               isGreaterThan: DateTime.now()
+//                   .subtract(const Duration(hours: 24))
+//                   .millisecondsSinceEpoch,
+//             )
+//             .get();
+//         for (var tempData in statusesSnapshot.docs) {
+//           Status tempStatus = Status.fromMap(tempData.data());
+//           print(tempStatus.whoCanSee);
+//           if (tempStatus.whoCanSee.contains(auth.currentUser!.phoneNumber)) {
+//             statusData.add(tempStatus);
+//           }
+//         }
+//       }
+//     } catch (e) {
+//       print(e.toString());
+//     }
+//     return statusData;
+//   }
+// }

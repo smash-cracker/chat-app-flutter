@@ -85,8 +85,6 @@ class ChatRepository {
     return firestore.collection('groups').snapshots().map((event) {
       List<Group> groups = [];
       for (var document in event.docs) {
-        print("document.data()");
-        print(document.data());
         var group = Group.fromMap(document.data());
         print("group");
         print(group);

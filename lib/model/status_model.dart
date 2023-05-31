@@ -2,7 +2,7 @@ class Status {
   final String uid;
   final String username;
   final String phoneNumber;
-  final List<String> photoUrl;
+  final List<Map<String, dynamic>> photoUrl;
   final DateTime createdAt;
   final String profilePic;
   final String statusId;
@@ -36,7 +36,7 @@ class Status {
       uid: map['uid'] ?? '',
       username: map['username'] ?? '',
       phoneNumber: map['phoneNumber'] ?? '',
-      photoUrl: List<String>.from(map['photoUrl']),
+      photoUrl: List<Map<String, dynamic>>.from(map['photoUrl']),
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       profilePic: map['profilePic'] ?? '',
       statusId: map['statusId'] ?? '',
