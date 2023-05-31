@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat/auth/class/chat/chat_controller.dart';
@@ -16,14 +17,17 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class BottomSendField extends ConsumerStatefulWidget {
   final String recieverUserId;
   final bool isGroupChat;
+  final bool online;
   const BottomSendField({
     super.key,
     required this.recieverUserId,
     required this.isGroupChat,
+    this.online = false,
   });
 
   @override
@@ -45,6 +49,41 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
     openAudio();
   }
 
+  Future<bool> pushNotificationsGroupDevice({
+    required String title,
+    required String body,
+    required List<String> IDs,
+  }) async {
+    print('hiccccccccccccccccccccccccccccc');
+    var IDS = jsonEncode(IDs);
+    String dataNotifications = '{'
+        '"operation": "create",'
+        '"notification_key_name": "chat-app-37644",'
+        '"registration_ids":$IDS,'
+        '"notification" : {'
+        '"title":"$title",'
+        '"body":"$body"'
+        ' }'
+        ' }';
+
+    var response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization':
+            'key=AAAAcdvzQX8:APA91bEm7OGq51Syap2cvOr0hdW07ofrEKfjfELVIKEnBaq_7ZJrCJ7AvAVni7VhGMN3RbJGJu2kT1hYbFy1oCxhVGoboxC73fkMpT7tRmSbrJOiSDclyMBe6--f78QL8ExgR8GtESiT',
+        'project_id': '489021456767'
+      },
+      body: dataNotifications,
+    );
+
+    print("xxxxxxx" + dataNotifications);
+
+    print(response.body.toString());
+
+    return true;
+  }
+
   void openAudio() async {
     final status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
@@ -64,6 +103,14 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
             widget.recieverUserId,
             widget.isGroupChat,
           );
+      print('ddddddddddddddddddddddddddddd');
+      pushNotificationsGroupDevice(
+        title: 'Chat',
+        body: _messageController.text,
+        IDs: [
+          'f4OdhHozTEusncH-z-dTFD:APA91bFFhyro-Q-Z5CMTIuXmYp_YpAuUzTpX6otiudg9BrYnL8xTntoCcgIL4GnbMRItoNR4VB-Dl3srKIi-J1JnAqZiKwmMxP_JpPBz3fpaFU6amlH07igR2AjP8R3D0WcfVgZyCijy'
+        ],
+      );
       setState(() {
         _messageController.text = '';
       });
@@ -234,7 +281,9 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: GestureDetector(
-                                        onTap: sendTextMessage,
+                                        onTap: () {
+                                          sendTextMessage();
+                                        },
                                         child: Icon(
                                           Icons.send,
                                           color: Colors.white,

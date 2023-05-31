@@ -256,6 +256,7 @@ class MobileChatScreen extends ConsumerWidget {
                 ),
               ),
               BottomSendField(
+                online: true,
                 recieverUserId: uid,
                 isGroupChat: isGroupChat,
               ),

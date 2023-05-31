@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'dart:convert';
 import 'dart:io';
 import 'package:boxicons/boxicons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,23 +9,24 @@ import 'package:chat/auth/class/controller.dart';
 import 'package:chat/auth/name.dart';
 import 'package:chat/auth/stories/screens/story_bar.dart';
 import 'package:chat/main.dart';
-import 'package:chat/model/chat_contact.dart';
 import 'package:chat/model/group.dart';
-import 'package:chat/screen/call_pickup_screen.dart';
 import 'package:chat/screen/group_mobile_chat_screen.dart';
 import 'package:chat/screen/mobile_chat_screen.dart';
 import 'package:chat/screen/select_contacts.dart';
 import 'package:chat/utils/chat_box.dart';
-import 'package:chat/utils/loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -38,9 +40,82 @@ class _MainPageState extends ConsumerState<MainPage>
   final FirebaseAuth auth = FirebaseAuth.instance;
   final scrollController = ScrollController();
   File? cachedFile;
+  String? token = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser!;
+
+  void permissionCheck() async {
+    PermissionStatus status = await Permission.notification.status;
+    if (status.isDenied) {
+      status = await Permission.notification.request();
+    }
+
+    status = await Permission.locationWhenInUse.status;
+    if (status.isDenied) {
+      status = await Permission.locationWhenInUse.request();
+    }
+
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      setState(() {
+        token = value;
+        saveToken(token!);
+      });
+    });
+  }
+
+  void saveToken(String token) async {
+    await _firestore.collection('userTokens').doc(user.uid).set({
+      'token': token,
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    permissionCheck();
+    getToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification!.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                color: Colors.blue,
+                playSound: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+            ));
+      }
+    });
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -49,28 +124,23 @@ class _MainPageState extends ConsumerState<MainPage>
     CollectionReference collection =
         FirebaseFirestore.instance.collection('groups');
 
-    // Fetch the document
     DocumentSnapshot snapshot = await collection.doc(docId).get();
     if (!snapshot.exists) {
       print('Document does not exist');
       return;
     }
 
-    // Get the current list of maps
     final data = snapshot.data() as Map<String, dynamic>;
 
     List<dynamic> list = data['membersUid'];
 
-    // Find the map with the matching phone number
     for (int i = 0; i < list.length; i++) {
       if (list[i]['phone'] == phoneNumber) {
-        // Update the messagesFrom field
         list.removeAt(i);
         break;
       }
     }
 
-    // Update the document with the modified list
     await collection.doc(docId).update({'membersUid': list});
   }
 
@@ -79,28 +149,23 @@ class _MainPageState extends ConsumerState<MainPage>
     CollectionReference collection =
         FirebaseFirestore.instance.collection('groups');
 
-    // Fetch the document
     DocumentSnapshot snapshot = await collection.doc(docId).get();
     if (!snapshot.exists) {
       print('Document does not exist');
       return;
     }
 
-    // Get the current list of maps
     final data = snapshot.data() as Map<String, dynamic>;
 
     List<dynamic> list = data['membersUid'];
 
-    // Find the map with the matching phone number
     for (int i = 0; i < list.length; i++) {
       if (list[i]['phone'] == phoneNumber) {
-        // Update the messagesFrom field
         list[i]['messagesFrom'] = newMessagesFrom;
         break;
       }
     }
 
-    // Update the document with the modified list
     await collection.doc(docId).update({'membersUid': list});
   }
 
@@ -173,7 +238,6 @@ class _MainPageState extends ConsumerState<MainPage>
           }
 
           if (snapshot.data!.data() == null) {
-            // Navigator.popUntil(context, (route) => route.isFirst);
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.pushReplacement(
                   context,
@@ -229,7 +293,6 @@ class _MainPageState extends ConsumerState<MainPage>
                 ),
                 actions: [
                   PopupMenuButton(
-                    // color: Colors.black,
                     shadowColor: Colors.white,
                     icon: Icon(
                       Icons.more_vert,

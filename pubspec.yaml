@@ -43,26 +43,30 @@ dependencies:
   easy_image_viewer: ^1.2.0
   enough_giphy_flutter: ^0.4.0
   file_picker: ^5.2.0
+  firebase_analytics: ^10.4.2
   firebase_auth: ^4.4.2
   firebase_core: ^2.10.0
+  firebase_messaging: ^14.6.2
   firebase_storage: ^11.1.1
   flutter:
     sdk: flutter
   flutter_cache_manager: ^3.3.0
   flutter_contacts: ^1.1.6
   flutter_expandable_fab: ^1.7.1
+  flutter_local_notifications: ^14.1.0
   flutter_riverpod: ^2.3.5
   flutter_slidable: ^3.0.0
   flutter_sound: ^9.2.13
   font_awesome_flutter: ^10.4.0
   google_fonts: ^4.0.3
+  http: ^0.13.5
   image_picker: ^0.8.7+3
   intl: ^0.17.0
   loading_animation_widget: ^1.2.0+4
   msh_checkbox: ^2.0.1
   page_transition: ^2.0.9
   path_provider: ^2.0.14
-  permission_handler: ^9.2.0
+  permission_handler: ^10.2.0
   pinput: ^2.2.31
   scroll_snap_list: ^0.9.1
   story_view: ^0.14.0
