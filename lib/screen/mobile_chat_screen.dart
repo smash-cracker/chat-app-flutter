@@ -24,6 +24,7 @@ import '../utils/colors.dart';
 
 class MobileChatScreen extends ConsumerWidget {
   File? cachedFile;
+  bool isOnline = false;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   void makeCall(WidgetRef ref, BuildContext context) {
@@ -168,6 +169,11 @@ class MobileChatScreen extends ConsumerWidget {
                         ],
                       );
                     }
+                    if (snapshot.data!.isOnline) {
+                      isOnline = true;
+                    } else {
+                      isOnline = false;
+                    }
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
@@ -256,7 +262,7 @@ class MobileChatScreen extends ConsumerWidget {
                 ),
               ),
               BottomSendField(
-                online: true,
+                online: isOnline,
                 recieverUserId: uid,
                 isGroupChat: isGroupChat,
               ),

@@ -87,7 +87,7 @@ class _MainPageState extends ConsumerState<MainPage>
   }
 
   void saveToken(String token) async {
-    await _firestore.collection('userTokens').doc(user.uid).set({
+    await _firestore.collection('userTokens').doc(user.phoneNumber).set({
       'token': token,
     });
   }

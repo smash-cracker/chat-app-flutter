@@ -9,6 +9,8 @@ import 'package:chat/common/providers/message_reply_provider.dart';
 import 'package:chat/utils/enum/message_enum.dart';
 import 'package:chat/utils/message_reply_preview.dart';
 import 'package:chat/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
@@ -27,7 +29,7 @@ class BottomSendField extends ConsumerStatefulWidget {
     super.key,
     required this.recieverUserId,
     required this.isGroupChat,
-    this.online = false,
+    this.online = true,
   });
 
   @override
@@ -54,7 +56,6 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
     required String body,
     required List<String> IDs,
   }) async {
-    print('hiccccccccccccccccccccccccccccc');
     var IDS = jsonEncode(IDs);
     String dataNotifications = '{'
         '"operation": "create",'
@@ -76,8 +77,6 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
       },
       body: dataNotifications,
     );
-
-    print("xxxxxxx" + dataNotifications);
 
     print(response.body.toString());
 
@@ -103,14 +102,23 @@ class _BottomSendFieldState extends ConsumerState<BottomSendField> {
             widget.recieverUserId,
             widget.isGroupChat,
           );
-      print('ddddddddddddddddddddddddddddd');
-      pushNotificationsGroupDevice(
-        title: 'Chat',
-        body: _messageController.text,
-        IDs: [
-          'f4OdhHozTEusncH-z-dTFD:APA91bFFhyro-Q-Z5CMTIuXmYp_YpAuUzTpX6otiudg9BrYnL8xTntoCcgIL4GnbMRItoNR4VB-Dl3srKIi-J1JnAqZiKwmMxP_JpPBz3fpaFU6amlH07igR2AjP8R3D0WcfVgZyCijy'
-        ],
-      );
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('userTokens')
+          .doc(widget.recieverUserId)
+          .get();
+      final data = doc.data() as Map<String, dynamic>;
+
+      if (!widget.online) {
+        print("user is offline so  sending");
+        pushNotificationsGroupDevice(
+          title: 'Chat',
+          body: _messageController.text,
+          IDs: [data['token']],
+        );
+      } else {
+        print("user is online so not sending");
+      }
+
       setState(() {
         _messageController.text = '';
       });
