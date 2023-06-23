@@ -84,6 +84,7 @@ class _ChatListState extends ConsumerState<ChatList> {
               if (messageData.senderID ==
                   FirebaseAuth.instance.currentUser!.phoneNumber) {
                 return MyMessageCard(
+                  fromGroup: false,
                   message: messageData.text,
                   date: DateFormat('Hm').format(messageData.timeSent),
                   type: messageData.type,
@@ -99,6 +100,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                 );
               }
               return SenderMessageCard(
+                fromGroup: false,
                 message: messageData.text,
                 date: DateFormat('Hm').format(messageData.timeSent),
                 type: messageData.type,

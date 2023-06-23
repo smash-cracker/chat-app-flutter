@@ -10,6 +10,7 @@ import 'package:swipe_to/swipe_to.dart';
 class MyMessageCard extends StatelessWidget {
   final String message;
   final String date;
+  final bool fromGroup;
 
   final MessageEnum type;
   final VoidCallback onLeftSwipe;
@@ -18,17 +19,18 @@ class MyMessageCard extends StatelessWidget {
   final MessageEnum repliedMessageType;
   final bool isSeen;
 
-  const MyMessageCard(
-      {Key? key,
-      required this.message,
-      required this.date,
-      required this.type,
-      required this.onLeftSwipe,
-      required this.repliedText,
-      required this.username,
-      required this.repliedMessageType,
-      required this.isSeen})
-      : super(key: key);
+  const MyMessageCard({
+    Key? key,
+    required this.message,
+    required this.date,
+    required this.type,
+    required this.onLeftSwipe,
+    required this.repliedText,
+    required this.username,
+    required this.repliedMessageType,
+    required this.isSeen,
+    required this.fromGroup,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

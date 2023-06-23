@@ -15,12 +15,13 @@ class SenderMessageCard extends StatelessWidget {
     required this.username,
     required this.senderName,
     required this.repliedMessageType,
+    required this.fromGroup,
   }) : super(key: key);
   final String message;
   final String date;
   final String senderName;
   final MessageEnum type;
-
+  final bool fromGroup;
   final VoidCallback onRightSwipe;
   final String repliedText;
   final String username;
@@ -46,7 +47,12 @@ class SenderMessageCard extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 child: Column(
                   children: [
-                    Text(senderName),
+                    fromGroup
+                        ? Text(
+                            senderName,
+                            style: TextStyle(color: Colors.pink[300]),
+                          )
+                        : SizedBox.shrink(),
                     Stack(
                       children: [
                         Padding(
